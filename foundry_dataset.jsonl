@@ -1,0 +1,21 @@
+{"query": "Traduce esta expresión de DataStage a PySpark: Trim(Upcase(FirstName)) : \" \" : Trim(Upcase(LastName))"}
+{"query": "Cómo traduzco: If IsNull(Status) Then \"UNKNOWN\" Else Upcase(Trim(Status))"}
+{"query": "Traduce: YearsFromDate(BirthDate)"}
+{"query": "Traduce: DaysSince(RegistrationDate)"}
+{"query": "Cómo convierto esta expresión compleja: If IsNull(Amount) Then 0 Else If Amount < 0 Then 0 Else Amount"}
+{"query": "Migra el archivo test-artifacts/01_simple_customer_etl.dsx a Databricks"}
+{"query": "Analiza la complejidad de test-artifacts/02_order_processing_join.dsx"}
+{"query": "Qué hace un Aggregator stage en DataStage y cómo lo migro?"}
+{"query": "Explica cómo funciona el Transformer stage"}
+{"query": "Cómo migro un Join stage con múltiples keys?"}
+{"query": "Qué es un Lookup stage y cuál es su equivalente en PySpark?"}
+{"query": "Cómo implemento Slowly Changing Dimension Type 2 en Databricks?"}
+{"query": "Muéstrame el patrón para implementar CDC (Change Data Capture) incremental"}
+{"query": "Cómo manejo errores y rechazos en PySpark similar a DataStage?"}
+{"query": "Cuál es el patrón para joins complejos con múltiples tablas?"}
+{"query": "Cómo optimizo la lectura de archivos CSV grandes en Databricks?"}
+{"query": "Qué optimizaciones debo aplicar al escribir a Delta Lake?"}
+{"query": "Cómo mejoro el performance de joins grandes?"}
+{"query": "Por qué mi job de DataStage corre rápido pero el equivalente en Spark es lento?"}
+{"query": "Cómo debugueo transformaciones que no dan el resultado esperado?"}
+{"query": "Cuáles son las mejores prácticas para migrar jobs de DataStage a Databricks?"}
