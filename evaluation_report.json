@@ -1,38 +1,19 @@
 {
-  "generated_at": "2026-02-19T13:08:20.702003",
+  "generated_at": "2026-02-19T14:34:10.519095",
   "summary": {
     "gpt-5.2-codex": {
-      "keyword_coverage": 0.7947845804988661,
+      "keyword_coverage": 0.9166666666666666,
       "includes_code": 1.0,
-      "well_structured": 0.9285714285714286,
-      "category_specific": 0.8673015873015874,
-      "overall": 0.8824557823129252,
-      "avg_time": 19.70714285714286,
+      "well_structured": 0.7999999999999999,
+      "groundedness": 1.0,
+      "relevance": 1.0,
+      "coherence": 0.9583333333333334,
+      "category_specific": 0.9861111111111112,
+      "overall": 0.9719444444444445,
+      "avg_time": 22.103333333333335,
       "by_category": {
-        "expression_translation": 0.97,
-        "full_migration": 0.6265000000000001,
-        "component_explanation": 0.9758928571428571,
-        "pattern_explanation": 0.79875,
-        "optimization": 0.8266666666666667,
-        "troubleshooting": 0.97,
-        "best_practices": 0.9099999999999999
-      }
-    },
-    "gpt-5.1-codex": {
-      "keyword_coverage": 0.7558956916099773,
-      "includes_code": 1.0,
-      "well_structured": 0.9714285714285713,
-      "category_specific": 0.8677777777777778,
-      "overall": 0.8811938775510205,
-      "avg_time": 13.057142857142857,
-      "by_category": {
-        "expression_translation": 0.9730000000000001,
-        "full_migration": 0.617,
-        "component_explanation": 0.9665178571428571,
-        "pattern_explanation": 0.7875,
-        "optimization": 0.8466666666666667,
-        "troubleshooting": 0.97,
-        "best_practices": 0.9099999999999999
+        "expression_translation": 0.978,
+        "full_migration": 0.9416666666666668
       }
     }
   },
@@ -43,15 +24,18 @@
         "category": "expression_translation",
         "difficulty": "easy",
         "query": "Traduce esta expresión de DataStage a PySpark: Trim(Upcase(FirstName)) : \" \" : Trim(Upcase(LastName))",
-        "response_length": 363,
-        "elapsed_sec": 7.42,
-        "output_tokens": 124,
+        "response_length": 423,
+        "elapsed_sec": 7.6,
+        "output_tokens": 169,
         "scores": {
           "keyword_coverage": 1.0,
           "includes_code": 1.0,
           "well_structured": 0.7,
+          "groundedness": 1.0,
+          "relevance": 1.0,
+          "coherence": 1.0,
           "category_specific": 1.0,
-          "overall": 0.97
+          "overall": 0.985
         }
       },
       {
@@ -59,15 +43,18 @@
         "category": "expression_translation",
         "difficulty": "easy",
         "query": "Cómo traduzco: If IsNull(Status) Then \"UNKNOWN\" Else Upcase(Trim(Status))",
-        "response_length": 341,
-        "elapsed_sec": 6.29,
-        "output_tokens": 116,
+        "response_length": 398,
+        "elapsed_sec": 7.81,
+        "output_tokens": 129,
         "scores": {
           "keyword_coverage": 1.0,
           "includes_code": 1.0,
           "well_structured": 0.7,
+          "groundedness": 1.0,
+          "relevance": 1.0,
+          "coherence": 1.0,
           "category_specific": 1.0,
-          "overall": 0.97
+          "overall": 0.985
         }
       },
       {
@@ -75,15 +62,18 @@
         "category": "expression_translation",
         "difficulty": "medium",
         "query": "Traduce: YearsFromDate(BirthDate)",
-        "response_length": 282,
-        "elapsed_sec": 6.51,
-        "output_tokens": 117,
+        "response_length": 229,
+        "elapsed_sec": 5.04,
+        "output_tokens": 80,
         "scores": {
           "keyword_coverage": 1.0,
           "includes_code": 1.0,
           "well_structured": 0.7,
+          "groundedness": 1.0,
+          "relevance": 1.0,
+          "coherence": 1.0,
           "category_specific": 1.0,
-          "overall": 0.97
+          "overall": 0.985
         }
       },
       {
@@ -91,15 +81,18 @@
         "category": "expression_translation",
         "difficulty": "easy",
         "query": "Traduce: DaysSince(RegistrationDate)",
-        "response_length": 204,
-        "elapsed_sec": 7.09,
-        "output_tokens": 113,
+        "response_length": 280,
+        "elapsed_sec": 10.38,
+        "output_tokens": 249,
         "scores": {
-          "keyword_coverage": 1.0,
+          "keyword_coverage": 0.5,
           "includes_code": 1.0,
           "well_structured": 0.7,
+          "groundedness": 1.0,
+          "relevance": 1.0,
+          "coherence": 1.0,
           "category_specific": 1.0,
-          "overall": 0.97
+          "overall": 0.935
         }
       },
       {
@@ -107,15 +100,18 @@
         "category": "expression_translation",
         "difficulty": "medium",
         "query": "Cómo convierto esta expresión compleja: If IsNull(Amount) Then 0 Else If Amount < 0 Then 0 Else Amount",
-        "response_length": 432,
-        "elapsed_sec": 39.61,
-        "output_tokens": 166,
+        "response_length": 431,
+        "elapsed_sec": 37.08,
+        "output_tokens": 163,
         "scores": {
           "keyword_coverage": 1.0,
           "includes_code": 1.0,
-          "well_structured": 0.7,
+          "well_structured": 1.0,
+          "groundedness": 1.0,
+          "relevance": 1.0,
+          "coherence": 1.0,
           "category_specific": 1.0,
-          "overall": 0.97
+          "overall": 1.0
         }
       },
       {
@@ -123,645 +119,31 @@
         "category": "full_migration",
         "difficulty": "hard",
         "query": "Migra el archivo test-artifacts/01_simple_customer_etl.dsx a Databricks\n\n<DSX_FILE_CONTENT>\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!--\nDataStage Job: Simple_Customer_ETL\nDescription: Lee archivo CSV de clientes, limpia datos y exporta resultado\nComplejidad: Básica\nPropósito: Validar traducción básica de read → transform → write\n-->\n<DSExport>\n    <Job Identifier=\"Simple_Customer_ETL\" DateModified=\"2024-01-15\" TimeModified=\"10:30:00\">\n        <Record Identifier=\"JOB\" Type=\"ServerJob\" Readonly=\"0\">\n            <Property Name=\"Name\">Simple_Customer_ETL</Property>\n            <Property Name=\"Description\">Procesa archivo de clientes - limpia y exporta</Property>\n            <Property Name=\"JobVersion\">1.0</Property>\n            <Property Name=\"Parameters\">\n                <Parameter>\n                    <Property Name=\"Name\">INPUT_FILE_PATH</Property>\n                    <Property Name=\"DefaultValue\">/data/input/customers.csv</Property>\n                    <Property Name=\"Description\">Ruta del archivo de entrada</Property>\n                </Parameter>\n                <Parameter>\n                    <Property Name=\"Name\">OUTPUT_FILE_PATH</Property>\n                    <Property Name=\"DefaultValue\">/data/output/customers_clean.csv</Property>\n                    <Property Name=\"Description\">Ruta del archivo de salida</Property>\n                </Parameter>\n                <Parameter>\n                    <Property Name=\"Name\">RUN_DATE</Property>\n                    <Property Name=\"DefaultValue\">#{CurrentDate}</Property>\n                    <Property Name=\"Description\">Fecha de ejecución</Property>\n                </Parameter>\n            </Property>\n            \n            <!-- Stage Definitions -->\n            <Record Identifier=\"V0S1\" Type=\"CustomStage\">\n                <Property Name=\"Name\">Input_Customers</Property>\n                <Property Name=\"StageType\">Sequential_File</Property>\n                <Property Name=\"StageMode\">Source</Property>\n                <Property Name=\"NextStage\">Transform_Clean</Property>\n                <Property Name=\"Columns\">\n                    <Column Name=\"CustomerID\" SqlType=\"INTEGER\" Nullable=\"0\"/>\n                    <Column Name=\"FirstName\" SqlType=\"VARCHAR\" Length=\"50\" Nullable=\"1\"/>\n                    <Column Name=\"LastName\" SqlType=\"VARCHAR\" Length=\"50\" Nullable=\"1\"/>\n                    <Column Name=\"Email\" SqlType=\"VARCHAR\" Length=\"100\" Nullable=\"1\"/>\n                    <Column Name=\"BirthDate\" SqlType=\"DATE\" Nullable=\"1\"/>\n                    <Column Name=\"Status\" SqlType=\"VARCHAR\" Length=\"20\" Nullable=\"1\"/>\n                    <Column Name=\"RegistrationDate\" SqlType=\"DATE\" Nullable=\"1\"/>\n                </Property>\n                <Property Name=\"FileFormat\">Delimited</Property>\n                <Property Name=\"ColumnDelimiter\">,</Property>\n                <Property Name=\"QuoteCharacter\">\"</Property>\n                <Property Name=\"FirstLineIsColumnNames\">True</Property>\n                <Property Name=\"FilePath\">#INPUT_FILE_PATH#</Property>\n            </Record>\n            \n            <Record Identifier=\"V0S2\" Type=\"CustomStage\">\n                <Property Name=\"Name\">Transform_Clean</Property>\n                <Property Name=\"StageType\">Transformer</Property>\n                <Property Name=\"NextStage\">Output_Customers</Property>\n                <Property Name=\"Derivations\">\n                    <Derivation>\n                        <Property Name=\"Name\">CustomerID</Property>\n                        <Property Name=\"Expression\">CustomerID</Property>\n                    </Derivation>\n                    <Derivation>\n                        <Property Name=\"Name\">FullName</Property>\n                        <Property Name=\"Expression\">Trim(Upcase(FirstName)) : \" \" : Trim(Upcase(LastName))</Property>\n                        <Property Name=\"Description\">Concatenar y limpiar nombre completo</Property>\n                    </Derivation>\n                    <Derivation>\n                        <Property Name=\"Name\">EmailClean</Property>\n                        <Property Name=\"Expression\">Downcase(Trim(Email))</Property>\n                        <Property Name=\"Description\">Normalizar email a minúsculas</Property>\n                    </Derivation>\n                    <Derivation>\n                        <Property Name=\"Name\">Age</Property>\n                        <Property Name=\"Expression\">YearsFromDate(BirthDate)</Property>\n                        <Property Name=\"Description\">Calcular edad desde fecha de nacimiento</Property>\n                    </Derivation>\n                    <Derivation>\n                        <Property Name=\"Name\">Status</Property>\n                        <Property Name=\"Expression\">If IsNull(Status) Then \"UNKNOWN\" Else Upcase(Trim(Status))</Property>\n                        <Property Name=\"Description\">Manejar status nulo</Property>\n                    </Derivation>\n                    <Derivation>\n                        <Property Name=\"Name\">DaysSinceRegistration</Property>\n                        <Property Name=\"Expression\">DaysSince(RegistrationDate)</Property>\n                        <Property Name=\"Description\">Días desde registro</Property>\n                    </Derivation>\n                    <Derivation>\n                        <Property Name=\"Name\">ProcessDate</Property>\n                        <Property Name=\"Expression\">#RUN_DATE#</Property>\n                        <Property Name=\"Description\">Fecha de procesamiento</Property>\n                    </Derivation>\n                </Property>\n                <Property Name=\"Constraints\">\n                    <Constraint>\n                        <Property Name=\"Expression\">NOT(IsNull(CustomerID))</Property>\n                        <Property Name=\"Description\">CustomerID no puede ser nulo</Property>\n                    </Constraint>\n                    <Constraint>\n                        <Property Name=\"Expression\">NOT(IsNull(Email))</Property>\n                        <Property Name=\"Description\">Email no puede ser nulo</Property>\n                    </Constraint>\n                    <Constraint>\n                        <Property Name=\"Expression\">Status = \"ACTIVE\" OR Status = \"INACTIVE\" OR Status = \"UNKNOWN\"</Property>\n                        <Property Name=\"Description\">Status debe ser valor válido</Property>\n                    </Constraint>\n                </Property>\n            </Record>\n            \n            <Record Identifier=\"V0S3\" Type=\"CustomStage\">\n                <Property Name=\"Name\">Output_Customers</Property>\n                <Property Name=\"StageType\">Sequential_File</Property>\n                <Property Name=\"StageMode\">Target</Property>\n                <Property Name=\"Columns\">\n                    <Column Name=\"CustomerID\" SqlType=\"INTEGER\"/>\n                    <Column Name=\"FullName\" SqlType=\"VARCHAR\" Length=\"100\"/>\n                    <Column Name=\"EmailClean\" SqlType=\"VARCHAR\" Length=\"100\"/>\n                    <Column Name=\"Age\" SqlType=\"INTEGER\"/>\n                    <Column Name=\"Status\" SqlType=\"VARCHAR\" Length=\"20\"/>\n                    <Column Name=\"DaysSinceRegistration\" SqlType=\"INTEGER\"/>\n                    <Column Name=\"ProcessDate\" SqlType=\"DATE\"/>\n                </Property>\n                <Property Name=\"FileFormat\">Delimited</Property>\n                <Property Name=\"ColumnDelimiter\">,</Property>\n                <Property Name=\"QuoteCharacter\">\"</Property>\n                <Property Name=\"FirstLineIsColumnNames\">True</Property>\n                <Property Name=\"FilePath\">#OUTPUT_FILE_PATH#</Property>\n                <Property Name=\"WriteMode\">OVERWRITE</Property>\n            </Record>\n            \n            <!-- Data Flow -->\n            <Property Name=\"DataFlow\">\n                <Stage From=\"Input_Customers\" To=\"Transform_Clean\"/>\n                <Stage From=\"Transform_Clean\" To=\"Output_Customers\"/>\n            </Property>\n        </Record>\n    </Job>\n</DSExport>\n\n</DSX_FILE_CONTENT>",
-        "response_length": 7281,
-        "elapsed_sec": 70.31,
-        "output_tokens": 2508,
+        "response_length": 7095,
+        "elapsed_sec": 64.71,
+        "output_tokens": 2466,
         "scores": {
           "keyword_coverage": 1.0,
           "includes_code": 1.0,
           "well_structured": 1.0,
-          "category_specific": 0.8600000000000003,
+          "groundedness": 1.0,
+          "relevance": 1.0,
+          "coherence": 0.7500000000000001,
+          "category_specific": 0.916666666666667,
           "migration_details": {
-            "syntax_valid": 0.1,
+            "syntax_valid": 0.06666666666666667,
             "schema_fidelity": 0.15,
             "transformations": 0.15,
             "all_stages": 0.15,
-            "parameters": 0.07,
+            "parameters": 0.1,
             "validations": 0.05,
             "delta_lake": 0.05,
-            "partitioning": 0.03,
-            "error_handling": 0.03,
-            "documentation": 0.03,
-            "notebook_structure": 0.05
-          },
-          "overall": 0.9160000000000001
-        }
-      },
-      {
-        "test_id": "full_002",
-        "category": "full_migration",
-        "difficulty": "medium",
-        "query": "Analiza la complejidad de test-artifacts/02_order_processing_join.dsx\n\n<DSX_FILE_CONTENT>\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!--\nDataStage Job: Order_Processing_With_Join\nDescription: Join orders con customers y products, calcular totales\nComplejidad: Media\nPropósito: Validar joins múltiples y aggregations\n-->\n<DSExport>\n    <Job Identifier=\"Order_Processing_With_Join\" DateModified=\"2024-01-15\" TimeModified=\"11:00:00\">\n        <Record Identifier=\"JOB\" Type=\"ServerJob\" Readonly=\"0\">\n            <Property Name=\"Name\">Order_Processing_With_Join</Property>\n            <Property Name=\"Description\">Procesa órdenes con joins a customers y products, agrega totales</Property>\n            <Property Name=\"JobVersion\">1.0</Property>\n            <Property Name=\"Parameters\">\n                <Parameter>\n                    <Property Name=\"Name\">ORDERS_PATH</Property>\n                    <Property Name=\"DefaultValue\">/data/input/orders.csv</Property>\n                </Parameter>\n                <Parameter>\n                    <Property Name=\"Name\">CUSTOMERS_PATH</Property>\n                    <Property Name=\"DefaultValue\">/data/input/customers.csv</Property>\n                </Parameter>\n                <Parameter>\n                    <Property Name=\"Name\">PRODUCTS_PATH</Property>\n                    <Property Name=\"DefaultValue\">/data/input/products.csv</Property>\n                </Parameter>\n                <Parameter>\n                    <Property Name=\"Name\">OUTPUT_PATH</Property>\n                    <Property Name=\"DefaultValue\">/data/output/order_summary.csv</Property>\n                </Parameter>\n            </Property>\n            \n            <!-- Input Stage: Orders -->\n            <Record Identifier=\"V0S1\" Type=\"CustomStage\">\n                <Property Name=\"Name\">Input_Orders</Property>\n                <Property Name=\"StageType\">Sequential_File</Property>\n                <Property Name=\"StageMode\">Source</Property>\n                <Property Name=\"NextStage\">Join_Orders_Customers</Property>\n                <Property Name=\"Columns\">\n                    <Column Name=\"OrderID\" SqlType=\"INTEGER\" Nullable=\"0\"/>\n                    <Column Name=\"CustomerID\" SqlType=\"INTEGER\" Nullable=\"0\"/>\n                    <Column Name=\"ProductID\" SqlType=\"INTEGER\" Nullable=\"0\"/>\n                    <Column Name=\"Quantity\" SqlType=\"INTEGER\" Nullable=\"0\"/>\n                    <Column Name=\"OrderDate\" SqlType=\"DATE\" Nullable=\"0\"/>\n                    <Column Name=\"OrderStatus\" SqlType=\"VARCHAR\" Length=\"20\" Nullable=\"1\"/>\n                </Property>\n                <Property Name=\"FileFormat\">Delimited</Property>\n                <Property Name=\"ColumnDelimiter\">,</Property>\n                <Property Name=\"FirstLineIsColumnNames\">True</Property>\n                <Property Name=\"FilePath\">#ORDERS_PATH#</Property>\n            </Record>\n            \n            <!-- Input Stage: Customers -->\n            <Record Identifier=\"V0S2\" Type=\"CustomStage\">\n                <Property Name=\"Name\">Input_Customers</Property>\n                <Property Name=\"StageType\">Sequential_File</Property>\n                <Property Name=\"StageMode\">Source</Property>\n                <Property Name=\"NextStage\">Join_Orders_Customers</Property>\n                <Property Name=\"Columns\">\n                    <Column Name=\"CustomerID\" SqlType=\"INTEGER\" Nullable=\"0\"/>\n                    <Column Name=\"CustomerName\" SqlType=\"VARCHAR\" Length=\"100\" Nullable=\"0\"/>\n                    <Column Name=\"CustomerSegment\" SqlType=\"VARCHAR\" Length=\"50\" Nullable=\"1\"/>\n                    <Column Name=\"Region\" SqlType=\"VARCHAR\" Length=\"50\" Nullable=\"1\"/>\n                </Property>\n                <Property Name=\"FileFormat\">Delimited</Property>\n                <Property Name=\"ColumnDelimiter\">,</Property>\n                <Property Name=\"FirstLineIsColumnNames\">True</Property>\n                <Property Name=\"FilePath\">#CUSTOMERS_PATH#</Property>\n            </Record>\n            \n            <!-- Input Stage: Products (Reference data for lookup) -->\n            <Record Identifier=\"V0S3\" Type=\"CustomStage\">\n                <Property Name=\"Name\">Input_Products</Property>\n                <Property Name=\"StageType\">Sequential_File</Property>\n                <Property Name=\"StageMode\">Source</Property>\n                <Property Name=\"NextStage\">Lookup_Products</Property>\n                <Property Name=\"Columns\">\n                    <Column Name=\"ProductID\" SqlType=\"INTEGER\" Nullable=\"0\"/>\n                    <Column Name=\"ProductName\" SqlType=\"VARCHAR\" Length=\"100\" Nullable=\"0\"/>\n                    <Column Name=\"Category\" SqlType=\"VARCHAR\" Length=\"50\" Nullable=\"1\"/>\n                    <Column Name=\"UnitPrice\" SqlType=\"DECIMAL\" Precision=\"10\" Scale=\"2\" Nullable=\"0\"/>\n                </Property>\n                <Property Name=\"FileFormat\">Delimited</Property>\n                <Property Name=\"ColumnDelimiter\">,</Property>\n                <Property Name=\"FirstLineIsColumnNames\">True</Property>\n                <Property Name=\"FilePath\">#PRODUCTS_PATH#</Property>\n            </Record>\n            \n            <!-- Join Stage: Orders + Customers -->\n            <Record Identifier=\"V0S4\" Type=\"CustomStage\">\n                <Property Name=\"Name\">Join_Orders_Customers</Property>\n                <Property Name=\"StageType\">Join</Property>\n                <Property Name=\"JoinType\">Inner</Property>\n                <Property Name=\"NextStage\">Lookup_Products</Property>\n                <Property Name=\"JoinKeys\">\n                    <JoinKey>\n                        <Property Name=\"LeftColumn\">CustomerID</Property>\n                        <Property Name=\"RightColumn\">CustomerID</Property>\n                    </JoinKey>\n                </Property>\n                <Property Name=\"OutputColumns\">\n                    <Column Source=\"Left\" Name=\"OrderID\"/>\n                    <Column Source=\"Left\" Name=\"CustomerID\"/>\n                    <Column Source=\"Left\" Name=\"ProductID\"/>\n                    <Column Source=\"Left\" Name=\"Quantity\"/>\n                    <Column Source=\"Left\" Name=\"OrderDate\"/>\n                    <Column Source=\"Left\" Name=\"OrderStatus\"/>\n                    <Column Source=\"Right\" Name=\"CustomerName\"/>\n                    <Column Source=\"Right\" Name=\"CustomerSegment\"/>\n                    <Column Source=\"Right\" Name=\"Region\"/>\n                </Property>\n            </Record>\n            \n            <!-- Lookup Stage: Add Product Info -->\n            <Record Identifier=\"V0S5\" Type=\"CustomStage\">\n                <Property Name=\"Name\">Lookup_Products</Property>\n                <Property Name=\"StageType\">Lookup</Property>\n                <Property Name=\"LookupType\">Normal</Property>\n                <Property Name=\"LookupFailureMode\">Continue</Property>\n                <Property Name=\"NextStage\">Transform_Calculate</Property>\n                <Property Name=\"LookupKeys\">\n                    <LookupKey>\n                        <Property Name=\"InputColumn\">ProductID</Property>\n                        <Property Name=\"ReferenceColumn\">ProductID</Property>\n                    </LookupKey>\n                </Property>\n                <Property Name=\"LookupColumns\">\n                    <Column Name=\"ProductName\"/>\n                    <Column Name=\"Category\"/>\n                    <Column Name=\"UnitPrice\"/>\n                </Property>\n                <Property Name=\"DefaultValues\">\n                    <DefaultValue Column=\"ProductName\" Value=\"UNKNOWN\"/>\n                    <DefaultValue Column=\"Category\" Value=\"UNCATEGORIZED\"/>\n                    <DefaultValue Column=\"UnitPrice\" Value=\"0\"/>\n                </Property>\n            </Record>\n            \n            <!-- Transformer: Calculate LineTotal -->\n            <Record Identifier=\"V0S6\" Type=\"CustomStage\">\n                <Property Name=\"Name\">Transform_Calculate</Property>\n                <Property Name=\"StageType\">Transformer</Property>\n                <Property Name=\"NextStage\">Aggregator_Summary</Property>\n                <Property Name=\"Derivations\">\n                    <Derivation>\n                        <Property Name=\"Name\">LineTotal</Property>\n                        <Property Name=\"Expression\">Quantity * UnitPrice</Property>\n                        <Property Name=\"Description\">Calcular total de línea</Property>\n                    </Derivation>\n                    <Derivation>\n                        <Property Name=\"Name\">OrderYear</Property>\n                        <Property Name=\"Expression\">Year(OrderDate)</Property>\n                    </Derivation>\n                    <Derivation>\n                        <Property Name=\"Name\">OrderMonth</Property>\n                        <Property Name=\"Expression\">Month(OrderDate)</Property>\n                    </Derivation>\n                    <Derivation>\n                        <Property Name=\"Name\">CompletedFlag</Property>\n                        <Property Name=\"Expression\">If OrderStatus = \"COMPLETED\" Then 1 Else 0</Property>\n                    </Derivation>\n                </Property>\n                <Property Name=\"Constraints\">\n                    <Constraint>\n                        <Property Name=\"Expression\">Quantity > 0</Property>\n                        <Property Name=\"Description\">Cantidad debe ser positiva</Property>\n                    </Constraint>\n                    <Constraint>\n                        <Property Name=\"Expression\">UnitPrice >= 0</Property>\n                        <Property Name=\"Description\">Precio no puede ser negativo</Property>\n                    </Constraint>\n                </Property>\n            </Record>\n            \n            <!-- Aggregator Stage: Summary by Customer -->\n            <Record Identifier=\"V0S7\" Type=\"CustomStage\">\n                <Property Name=\"Name\">Aggregator_Summary</Property>\n                <Property Name=\"StageType\">Aggregator</Property>\n                <Property Name=\"NextStage\">Sort_Results</Property>\n                <Property Name=\"GroupingKeys\">\n                    <Key Name=\"CustomerID\"/>\n                    <Key Name=\"CustomerName\"/>\n                    <Key Name=\"CustomerSegment\"/>\n                    <Key Name=\"Region\"/>\n                    <Key Name=\"OrderYear\"/>\n                    <Key Name=\"OrderMonth\"/>\n                </Property>\n                <Property Name=\"Aggregations\">\n                    <Aggregation>\n                        <Property Name=\"Name\">TotalOrders</Property>\n                        <Property Name=\"Function\">COUNT</Property>\n                        <Property Name=\"Description\">Número total de órdenes</Property>\n                    </Aggregation>\n                    <Aggregation>\n                        <Property Name=\"Name\">TotalRevenue</Property>\n                        <Property Name=\"Function\">SUM</Property>\n                        <Property Name=\"Column\">LineTotal</Property>\n                        <Property Name=\"Description\">Revenue total</Property>\n                    </Aggregation>\n                    <Aggregation>\n                        <Property Name=\"Name\">AvgOrderValue</Property>\n                        <Property Name=\"Function\">AVG</Property>\n                        <Property Name=\"Column\">LineTotal</Property>\n                    </Aggregation>\n                    <Aggregation>\n                        <Property Name=\"Name\">MinOrderValue</Property>\n                        <Property Name=\"Function\">MIN</Property>\n                        <Property Name=\"Column\">LineTotal</Property>\n                    </Aggregation>\n                    <Aggregation>\n                        <Property Name=\"Name\">MaxOrderValue</Property>\n                        <Property Name=\"Function\">MAX</Property>\n                        <Property Name=\"Column\">LineTotal</Property>\n                    </Aggregation>\n                    <Aggregation>\n                        <Property Name=\"Name\">CompletedOrders</Property>\n                        <Property Name=\"Function\">SUM</Property>\n                        <Property Name=\"Column\">CompletedFlag</Property>\n                    </Aggregation>\n                    <Aggregation>\n                        <Property Name=\"Name\">TotalQuantity</Property>\n                        <Property Name=\"Function\">SUM</Property>\n                        <Property Name=\"Column\">Quantity</Property>\n                    </Aggregation>\n                </Property>\n            </Record>\n            \n            <!-- Sort Stage -->\n            <Record Identifier=\"V0S8\" Type=\"CustomStage\">\n                <Property Name=\"Name\">Sort_Results</Property>\n                <Property Name=\"StageType\">Sort</Property>\n                <Property Name=\"NextStage\">Output_Summary</Property>\n                <Property Name=\"SortKeys\">\n                    <Key Name=\"TotalRevenue\" Direction=\"DESC\"/>\n                    <Key Name=\"CustomerName\" Direction=\"ASC\"/>\n                </Property>\n            </Record>\n            \n            <!-- Output Stage -->\n            <Record Identifier=\"V0S9\" Type=\"CustomStage\">\n                <Property Name=\"Name\">Output_Summary</Property>\n                <Property Name=\"StageType\">Sequential_File</Property>\n                <Property Name=\"StageMode\">Target</Property>\n                <Property Name=\"FileFormat\">Delimited</Property>\n                <Property Name=\"ColumnDelimiter\">,</Property>\n                <Property Name=\"FirstLineIsColumnNames\">True</Property>\n                <Property Name=\"FilePath\">#OUTPUT_PATH#</Property>\n                <Property Name=\"WriteMode\">OVERWRITE</Property>\n            </Record>\n            \n            <!-- Data Flow -->\n            <Property Name=\"DataFlow\">\n                <Stage From=\"Input_Orders\" To=\"Join_Orders_Customers\" Link=\"Left\"/>\n                <Stage From=\"Input_Customers\" To=\"Join_Orders_Customers\" Link=\"Right\"/>\n                <Stage From=\"Join_Orders_Customers\" To=\"Lookup_Products\" Link=\"Main\"/>\n                <Stage From=\"Input_Products\" To=\"Lookup_Products\" Link=\"Reference\"/>\n                <Stage From=\"Lookup_Products\" To=\"Transform_Calculate\"/>\n                <Stage From=\"Transform_Calculate\" To=\"Aggregator_Summary\"/>\n                <Stage From=\"Aggregator_Summary\" To=\"Sort_Results\"/>\n                <Stage From=\"Sort_Results\" To=\"Output_Summary\"/>\n            </Property>\n        </Record>\n    </Job>\n</DSExport>\n\n</DSX_FILE_CONTENT>",
-        "response_length": 1568,
-        "elapsed_sec": 19.44,
-        "output_tokens": 450,
-        "scores": {
-          "keyword_coverage": 0.5,
-          "includes_code": 1.0,
-          "well_structured": 1.0,
-          "category_specific": 0.02,
-          "migration_details": {
-            "syntax_valid": 0.0,
-            "schema_fidelity": 0.0,
-            "transformations": 0.0,
-            "all_stages": 0.0,
-            "parameters": 0.0,
-            "validations": 0.0,
-            "delta_lake": 0.0,
-            "partitioning": 0.0,
-            "error_handling": 0.0,
-            "documentation": 0.02,
-            "notebook_structure": 0.0
-          },
-          "overall": 0.337
-        }
-      },
-      {
-        "test_id": "comp_001",
-        "category": "component_explanation",
-        "difficulty": "easy",
-        "query": "Qué hace un Aggregator stage en DataStage y cómo lo migro?",
-        "response_length": 1297,
-        "elapsed_sec": 19.94,
-        "output_tokens": 377,
-        "scores": {
-          "keyword_coverage": 1.0,
-          "includes_code": 1.0,
-          "well_structured": 1.0,
-          "category_specific": 1.0,
-          "overall": 1.0
-        }
-      },
-      {
-        "test_id": "comp_002",
-        "category": "component_explanation",
-        "difficulty": "easy",
-        "query": "Explica cómo funciona el Transformer stage",
-        "response_length": 2166,
-        "elapsed_sec": 19.45,
-        "output_tokens": 577,
-        "scores": {
-          "keyword_coverage": 0.75,
-          "includes_code": 1.0,
-          "well_structured": 1.0,
-          "category_specific": 1.0,
-          "overall": 0.9624999999999999
-        }
-      },
-      {
-        "test_id": "comp_003",
-        "category": "component_explanation",
-        "difficulty": "medium",
-        "query": "Cómo migro un Join stage con múltiples keys?",
-        "response_length": 1559,
-        "elapsed_sec": 16.55,
-        "output_tokens": 508,
-        "scores": {
-          "keyword_coverage": 0.8571428571428571,
-          "includes_code": 1.0,
-          "well_structured": 1.0,
-          "category_specific": 1.0,
-          "overall": 0.9785714285714285
-        }
-      },
-      {
-        "test_id": "comp_004",
-        "category": "component_explanation",
-        "difficulty": "medium",
-        "query": "Qué es un Lookup stage y cuál es su equivalente en PySpark?",
-        "response_length": 1190,
-        "elapsed_sec": 15.07,
-        "output_tokens": 321,
-        "scores": {
-          "keyword_coverage": 0.75,
-          "includes_code": 1.0,
-          "well_structured": 1.0,
-          "category_specific": 1.0,
-          "overall": 0.9624999999999999
-        }
-      },
-      {
-        "test_id": "pattern_001",
-        "category": "pattern_explanation",
-        "difficulty": "hard",
-        "query": "Cómo implemento Slowly Changing Dimension Type 2 en Databricks?",
-        "response_length": 2718,
-        "elapsed_sec": 20.5,
-        "output_tokens": 730,
-        "scores": {
-          "keyword_coverage": 0.8333333333333334,
-          "includes_code": 1.0,
-          "well_structured": 1.0,
-          "category_specific": 0.75,
-          "overall": 0.825
-        }
-      },
-      {
-        "test_id": "pattern_002",
-        "category": "pattern_explanation",
-        "difficulty": "hard",
-        "query": "Muéstrame el patrón para implementar CDC (Change Data Capture) incremental",
-        "response_length": 1683,
-        "elapsed_sec": 17.6,
-        "output_tokens": 478,
-        "scores": {
-          "keyword_coverage": 1.0,
-          "includes_code": 1.0,
-          "well_structured": 1.0,
-          "category_specific": 0.75,
-          "overall": 0.85
-        }
-      },
-      {
-        "test_id": "pattern_003",
-        "category": "pattern_explanation",
-        "difficulty": "medium",
-        "query": "Cómo manejo errores y rechazos en PySpark similar a DataStage?",
-        "response_length": 2288,
-        "elapsed_sec": 21.07,
-        "output_tokens": 663,
-        "scores": {
-          "keyword_coverage": 0.4,
-          "includes_code": 1.0,
-          "well_structured": 1.0,
-          "category_specific": 0.75,
-          "overall": 0.76
-        }
-      },
-      {
-        "test_id": "pattern_004",
-        "category": "pattern_explanation",
-        "difficulty": "medium",
-        "query": "Cuál es el patrón para joins complejos con múltiples tablas?",
-        "response_length": 1283,
-        "elapsed_sec": 13.05,
-        "output_tokens": 349,
-        "scores": {
-          "keyword_coverage": 0.4,
-          "includes_code": 1.0,
-          "well_structured": 1.0,
-          "category_specific": 0.75,
-          "overall": 0.76
-        }
-      },
-      {
-        "test_id": "opt_001",
-        "category": "optimization",
-        "difficulty": "medium",
-        "query": "Cómo optimizo la lectura de archivos CSV grandes en Databricks?",
-        "response_length": 2146,
-        "elapsed_sec": 20.92,
-        "output_tokens": 677,
-        "scores": {
-          "keyword_coverage": 0.6,
-          "includes_code": 1.0,
-          "well_structured": 1.0,
-          "category_specific": 0.3333333333333333,
-          "overall": 0.54
-        }
-      },
-      {
-        "test_id": "opt_002",
-        "category": "optimization",
-        "difficulty": "medium",
-        "query": "Qué optimizaciones debo aplicar al escribir a Delta Lake?",
-        "response_length": 2051,
-        "elapsed_sec": 18.57,
-        "output_tokens": 648,
-        "scores": {
-          "keyword_coverage": 0.8,
-          "includes_code": 1.0,
-          "well_structured": 1.0,
-          "category_specific": 1.0,
-          "overall": 0.97
-        }
-      },
-      {
-        "test_id": "opt_003",
-        "category": "optimization",
-        "difficulty": "hard",
-        "query": "Cómo mejoro el performance de joins grandes?",
-        "response_length": 1807,
-        "elapsed_sec": 15.62,
-        "output_tokens": 583,
-        "scores": {
-          "keyword_coverage": 0.8,
-          "includes_code": 1.0,
-          "well_structured": 1.0,
-          "category_specific": 1.0,
-          "overall": 0.97
-        }
-      },
-      {
-        "test_id": "trouble_001",
-        "category": "troubleshooting",
-        "difficulty": "medium",
-        "query": "Por qué mi job de DataStage corre rápido pero el equivalente en Spark es lento?",
-        "response_length": 1725,
-        "elapsed_sec": 18.37,
-        "output_tokens": 519,
-        "scores": {
-          "keyword_coverage": 0.8,
-          "includes_code": 1.0,
-          "well_structured": 1.0,
-          "category_specific": 1.0,
-          "overall": 0.97
-        }
-      },
-      {
-        "test_id": "trouble_002",
-        "category": "troubleshooting",
-        "difficulty": "easy",
-        "query": "Cómo debugueo transformaciones que no dan el resultado esperado?",
-        "response_length": 2706,
-        "elapsed_sec": 22.11,
-        "output_tokens": 779,
-        "scores": {
-          "keyword_coverage": 0.8,
-          "includes_code": 1.0,
-          "well_structured": 1.0,
-          "category_specific": 1.0,
-          "overall": 0.97
-        }
-      },
-      {
-        "test_id": "best_001",
-        "category": "best_practices",
-        "difficulty": "easy",
-        "query": "Cuáles son las mejores prácticas para migrar jobs de DataStage a Databricks?",
-        "response_length": 1887,
-        "elapsed_sec": 18.36,
-        "output_tokens": 533,
-        "scores": {
-          "keyword_coverage": 0.4,
-          "includes_code": 1.0,
-          "well_structured": 1.0,
-          "category_specific": 1.0,
-          "overall": 0.9099999999999999
-        }
-      }
-    ],
-    "gpt-5.1-codex": [
-      {
-        "test_id": "expr_001",
-        "category": "expression_translation",
-        "difficulty": "easy",
-        "query": "Traduce esta expresión de DataStage a PySpark: Trim(Upcase(FirstName)) : \" \" : Trim(Upcase(LastName))",
-        "response_length": 466,
-        "elapsed_sec": 4.9,
-        "output_tokens": 165,
-        "scores": {
-          "keyword_coverage": 1.0,
-          "includes_code": 1.0,
-          "well_structured": 1.0,
-          "category_specific": 1.0,
-          "overall": 1.0
-        }
-      },
-      {
-        "test_id": "expr_002",
-        "category": "expression_translation",
-        "difficulty": "easy",
-        "query": "Cómo traduzco: If IsNull(Status) Then \"UNKNOWN\" Else Upcase(Trim(Status))",
-        "response_length": 615,
-        "elapsed_sec": 5.6,
-        "output_tokens": 192,
-        "scores": {
-          "keyword_coverage": 1.0,
-          "includes_code": 1.0,
-          "well_structured": 1.0,
-          "category_specific": 1.0,
-          "overall": 1.0
-        }
-      },
-      {
-        "test_id": "expr_003",
-        "category": "expression_translation",
-        "difficulty": "medium",
-        "query": "Traduce: YearsFromDate(BirthDate)",
-        "response_length": 380,
-        "elapsed_sec": 4.77,
-        "output_tokens": 111,
-        "scores": {
-          "keyword_coverage": 1.0,
-          "includes_code": 1.0,
-          "well_structured": 0.7,
-          "category_specific": 1.0,
-          "overall": 0.97
-        }
-      },
-      {
-        "test_id": "expr_004",
-        "category": "expression_translation",
-        "difficulty": "easy",
-        "query": "Traduce: DaysSince(RegistrationDate)",
-        "response_length": 412,
-        "elapsed_sec": 13.62,
-        "output_tokens": 812,
-        "scores": {
-          "keyword_coverage": 0.5,
-          "includes_code": 1.0,
-          "well_structured": 0.7,
-          "category_specific": 1.0,
-          "overall": 0.895
-        }
-      },
-      {
-        "test_id": "expr_005",
-        "category": "expression_translation",
-        "difficulty": "medium",
-        "query": "Cómo convierto esta expresión compleja: If IsNull(Amount) Then 0 Else If Amount < 0 Then 0 Else Amount",
-        "response_length": 601,
-        "elapsed_sec": 5.8,
-        "output_tokens": 188,
-        "scores": {
-          "keyword_coverage": 1.0,
-          "includes_code": 1.0,
-          "well_structured": 1.0,
-          "category_specific": 1.0,
-          "overall": 1.0
-        }
-      },
-      {
-        "test_id": "full_001",
-        "category": "full_migration",
-        "difficulty": "hard",
-        "query": "Migra el archivo test-artifacts/01_simple_customer_etl.dsx a Databricks\n\n<DSX_FILE_CONTENT>\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!--\nDataStage Job: Simple_Customer_ETL\nDescription: Lee archivo CSV de clientes, limpia datos y exporta resultado\nComplejidad: Básica\nPropósito: Validar traducción básica de read → transform → write\n-->\n<DSExport>\n    <Job Identifier=\"Simple_Customer_ETL\" DateModified=\"2024-01-15\" TimeModified=\"10:30:00\">\n        <Record Identifier=\"JOB\" Type=\"ServerJob\" Readonly=\"0\">\n            <Property Name=\"Name\">Simple_Customer_ETL</Property>\n            <Property Name=\"Description\">Procesa archivo de clientes - limpia y exporta</Property>\n            <Property Name=\"JobVersion\">1.0</Property>\n            <Property Name=\"Parameters\">\n                <Parameter>\n                    <Property Name=\"Name\">INPUT_FILE_PATH</Property>\n                    <Property Name=\"DefaultValue\">/data/input/customers.csv</Property>\n                    <Property Name=\"Description\">Ruta del archivo de entrada</Property>\n                </Parameter>\n                <Parameter>\n                    <Property Name=\"Name\">OUTPUT_FILE_PATH</Property>\n                    <Property Name=\"DefaultValue\">/data/output/customers_clean.csv</Property>\n                    <Property Name=\"Description\">Ruta del archivo de salida</Property>\n                </Parameter>\n                <Parameter>\n                    <Property Name=\"Name\">RUN_DATE</Property>\n                    <Property Name=\"DefaultValue\">#{CurrentDate}</Property>\n                    <Property Name=\"Description\">Fecha de ejecución</Property>\n                </Parameter>\n            </Property>\n            \n            <!-- Stage Definitions -->\n            <Record Identifier=\"V0S1\" Type=\"CustomStage\">\n                <Property Name=\"Name\">Input_Customers</Property>\n                <Property Name=\"StageType\">Sequential_File</Property>\n                <Property Name=\"StageMode\">Source</Property>\n                <Property Name=\"NextStage\">Transform_Clean</Property>\n                <Property Name=\"Columns\">\n                    <Column Name=\"CustomerID\" SqlType=\"INTEGER\" Nullable=\"0\"/>\n                    <Column Name=\"FirstName\" SqlType=\"VARCHAR\" Length=\"50\" Nullable=\"1\"/>\n                    <Column Name=\"LastName\" SqlType=\"VARCHAR\" Length=\"50\" Nullable=\"1\"/>\n                    <Column Name=\"Email\" SqlType=\"VARCHAR\" Length=\"100\" Nullable=\"1\"/>\n                    <Column Name=\"BirthDate\" SqlType=\"DATE\" Nullable=\"1\"/>\n                    <Column Name=\"Status\" SqlType=\"VARCHAR\" Length=\"20\" Nullable=\"1\"/>\n                    <Column Name=\"RegistrationDate\" SqlType=\"DATE\" Nullable=\"1\"/>\n                </Property>\n                <Property Name=\"FileFormat\">Delimited</Property>\n                <Property Name=\"ColumnDelimiter\">,</Property>\n                <Property Name=\"QuoteCharacter\">\"</Property>\n                <Property Name=\"FirstLineIsColumnNames\">True</Property>\n                <Property Name=\"FilePath\">#INPUT_FILE_PATH#</Property>\n            </Record>\n            \n            <Record Identifier=\"V0S2\" Type=\"CustomStage\">\n                <Property Name=\"Name\">Transform_Clean</Property>\n                <Property Name=\"StageType\">Transformer</Property>\n                <Property Name=\"NextStage\">Output_Customers</Property>\n                <Property Name=\"Derivations\">\n                    <Derivation>\n                        <Property Name=\"Name\">CustomerID</Property>\n                        <Property Name=\"Expression\">CustomerID</Property>\n                    </Derivation>\n                    <Derivation>\n                        <Property Name=\"Name\">FullName</Property>\n                        <Property Name=\"Expression\">Trim(Upcase(FirstName)) : \" \" : Trim(Upcase(LastName))</Property>\n                        <Property Name=\"Description\">Concatenar y limpiar nombre completo</Property>\n                    </Derivation>\n                    <Derivation>\n                        <Property Name=\"Name\">EmailClean</Property>\n                        <Property Name=\"Expression\">Downcase(Trim(Email))</Property>\n                        <Property Name=\"Description\">Normalizar email a minúsculas</Property>\n                    </Derivation>\n                    <Derivation>\n                        <Property Name=\"Name\">Age</Property>\n                        <Property Name=\"Expression\">YearsFromDate(BirthDate)</Property>\n                        <Property Name=\"Description\">Calcular edad desde fecha de nacimiento</Property>\n                    </Derivation>\n                    <Derivation>\n                        <Property Name=\"Name\">Status</Property>\n                        <Property Name=\"Expression\">If IsNull(Status) Then \"UNKNOWN\" Else Upcase(Trim(Status))</Property>\n                        <Property Name=\"Description\">Manejar status nulo</Property>\n                    </Derivation>\n                    <Derivation>\n                        <Property Name=\"Name\">DaysSinceRegistration</Property>\n                        <Property Name=\"Expression\">DaysSince(RegistrationDate)</Property>\n                        <Property Name=\"Description\">Días desde registro</Property>\n                    </Derivation>\n                    <Derivation>\n                        <Property Name=\"Name\">ProcessDate</Property>\n                        <Property Name=\"Expression\">#RUN_DATE#</Property>\n                        <Property Name=\"Description\">Fecha de procesamiento</Property>\n                    </Derivation>\n                </Property>\n                <Property Name=\"Constraints\">\n                    <Constraint>\n                        <Property Name=\"Expression\">NOT(IsNull(CustomerID))</Property>\n                        <Property Name=\"Description\">CustomerID no puede ser nulo</Property>\n                    </Constraint>\n                    <Constraint>\n                        <Property Name=\"Expression\">NOT(IsNull(Email))</Property>\n                        <Property Name=\"Description\">Email no puede ser nulo</Property>\n                    </Constraint>\n                    <Constraint>\n                        <Property Name=\"Expression\">Status = \"ACTIVE\" OR Status = \"INACTIVE\" OR Status = \"UNKNOWN\"</Property>\n                        <Property Name=\"Description\">Status debe ser valor válido</Property>\n                    </Constraint>\n                </Property>\n            </Record>\n            \n            <Record Identifier=\"V0S3\" Type=\"CustomStage\">\n                <Property Name=\"Name\">Output_Customers</Property>\n                <Property Name=\"StageType\">Sequential_File</Property>\n                <Property Name=\"StageMode\">Target</Property>\n                <Property Name=\"Columns\">\n                    <Column Name=\"CustomerID\" SqlType=\"INTEGER\"/>\n                    <Column Name=\"FullName\" SqlType=\"VARCHAR\" Length=\"100\"/>\n                    <Column Name=\"EmailClean\" SqlType=\"VARCHAR\" Length=\"100\"/>\n                    <Column Name=\"Age\" SqlType=\"INTEGER\"/>\n                    <Column Name=\"Status\" SqlType=\"VARCHAR\" Length=\"20\"/>\n                    <Column Name=\"DaysSinceRegistration\" SqlType=\"INTEGER\"/>\n                    <Column Name=\"ProcessDate\" SqlType=\"DATE\"/>\n                </Property>\n                <Property Name=\"FileFormat\">Delimited</Property>\n                <Property Name=\"ColumnDelimiter\">,</Property>\n                <Property Name=\"QuoteCharacter\">\"</Property>\n                <Property Name=\"FirstLineIsColumnNames\">True</Property>\n                <Property Name=\"FilePath\">#OUTPUT_FILE_PATH#</Property>\n                <Property Name=\"WriteMode\">OVERWRITE</Property>\n            </Record>\n            \n            <!-- Data Flow -->\n            <Property Name=\"DataFlow\">\n                <Stage From=\"Input_Customers\" To=\"Transform_Clean\"/>\n                <Stage From=\"Transform_Clean\" To=\"Output_Customers\"/>\n            </Property>\n        </Record>\n    </Job>\n</DSExport>\n\n</DSX_FILE_CONTENT>",
-        "response_length": 11219,
-        "elapsed_sec": 52.2,
-        "output_tokens": 4698,
-        "scores": {
-          "keyword_coverage": 0.8333333333333334,
-          "includes_code": 1.0,
-          "well_structured": 1.0,
-          "category_specific": 0.8700000000000001,
-          "migration_details": {
-            "syntax_valid": 0.1,
-            "schema_fidelity": 0.15,
-            "transformations": 0.15,
-            "all_stages": 0.09999999999999999,
-            "parameters": 0.07,
-            "validations": 0.05,
-            "delta_lake": 0.08,
-            "partitioning": 0.03,
+            "partitioning": 0.06,
             "error_handling": 0.06,
             "documentation": 0.03,
             "notebook_structure": 0.05
           },
-          "overall": 0.897
-        }
-      },
-      {
-        "test_id": "full_002",
-        "category": "full_migration",
-        "difficulty": "medium",
-        "query": "Analiza la complejidad de test-artifacts/02_order_processing_join.dsx\n\n<DSX_FILE_CONTENT>\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!--\nDataStage Job: Order_Processing_With_Join\nDescription: Join orders con customers y products, calcular totales\nComplejidad: Media\nPropósito: Validar joins múltiples y aggregations\n-->\n<DSExport>\n    <Job Identifier=\"Order_Processing_With_Join\" DateModified=\"2024-01-15\" TimeModified=\"11:00:00\">\n        <Record Identifier=\"JOB\" Type=\"ServerJob\" Readonly=\"0\">\n            <Property Name=\"Name\">Order_Processing_With_Join</Property>\n            <Property Name=\"Description\">Procesa órdenes con joins a customers y products, agrega totales</Property>\n            <Property Name=\"JobVersion\">1.0</Property>\n            <Property Name=\"Parameters\">\n                <Parameter>\n                    <Property Name=\"Name\">ORDERS_PATH</Property>\n                    <Property Name=\"DefaultValue\">/data/input/orders.csv</Property>\n                </Parameter>\n                <Parameter>\n                    <Property Name=\"Name\">CUSTOMERS_PATH</Property>\n                    <Property Name=\"DefaultValue\">/data/input/customers.csv</Property>\n                </Parameter>\n                <Parameter>\n                    <Property Name=\"Name\">PRODUCTS_PATH</Property>\n                    <Property Name=\"DefaultValue\">/data/input/products.csv</Property>\n                </Parameter>\n                <Parameter>\n                    <Property Name=\"Name\">OUTPUT_PATH</Property>\n                    <Property Name=\"DefaultValue\">/data/output/order_summary.csv</Property>\n                </Parameter>\n            </Property>\n            \n            <!-- Input Stage: Orders -->\n            <Record Identifier=\"V0S1\" Type=\"CustomStage\">\n                <Property Name=\"Name\">Input_Orders</Property>\n                <Property Name=\"StageType\">Sequential_File</Property>\n                <Property Name=\"StageMode\">Source</Property>\n                <Property Name=\"NextStage\">Join_Orders_Customers</Property>\n                <Property Name=\"Columns\">\n                    <Column Name=\"OrderID\" SqlType=\"INTEGER\" Nullable=\"0\"/>\n                    <Column Name=\"CustomerID\" SqlType=\"INTEGER\" Nullable=\"0\"/>\n                    <Column Name=\"ProductID\" SqlType=\"INTEGER\" Nullable=\"0\"/>\n                    <Column Name=\"Quantity\" SqlType=\"INTEGER\" Nullable=\"0\"/>\n                    <Column Name=\"OrderDate\" SqlType=\"DATE\" Nullable=\"0\"/>\n                    <Column Name=\"OrderStatus\" SqlType=\"VARCHAR\" Length=\"20\" Nullable=\"1\"/>\n                </Property>\n                <Property Name=\"FileFormat\">Delimited</Property>\n                <Property Name=\"ColumnDelimiter\">,</Property>\n                <Property Name=\"FirstLineIsColumnNames\">True</Property>\n                <Property Name=\"FilePath\">#ORDERS_PATH#</Property>\n            </Record>\n            \n            <!-- Input Stage: Customers -->\n            <Record Identifier=\"V0S2\" Type=\"CustomStage\">\n                <Property Name=\"Name\">Input_Customers</Property>\n                <Property Name=\"StageType\">Sequential_File</Property>\n                <Property Name=\"StageMode\">Source</Property>\n                <Property Name=\"NextStage\">Join_Orders_Customers</Property>\n                <Property Name=\"Columns\">\n                    <Column Name=\"CustomerID\" SqlType=\"INTEGER\" Nullable=\"0\"/>\n                    <Column Name=\"CustomerName\" SqlType=\"VARCHAR\" Length=\"100\" Nullable=\"0\"/>\n                    <Column Name=\"CustomerSegment\" SqlType=\"VARCHAR\" Length=\"50\" Nullable=\"1\"/>\n                    <Column Name=\"Region\" SqlType=\"VARCHAR\" Length=\"50\" Nullable=\"1\"/>\n                </Property>\n                <Property Name=\"FileFormat\">Delimited</Property>\n                <Property Name=\"ColumnDelimiter\">,</Property>\n                <Property Name=\"FirstLineIsColumnNames\">True</Property>\n                <Property Name=\"FilePath\">#CUSTOMERS_PATH#</Property>\n            </Record>\n            \n            <!-- Input Stage: Products (Reference data for lookup) -->\n            <Record Identifier=\"V0S3\" Type=\"CustomStage\">\n                <Property Name=\"Name\">Input_Products</Property>\n                <Property Name=\"StageType\">Sequential_File</Property>\n                <Property Name=\"StageMode\">Source</Property>\n                <Property Name=\"NextStage\">Lookup_Products</Property>\n                <Property Name=\"Columns\">\n                    <Column Name=\"ProductID\" SqlType=\"INTEGER\" Nullable=\"0\"/>\n                    <Column Name=\"ProductName\" SqlType=\"VARCHAR\" Length=\"100\" Nullable=\"0\"/>\n                    <Column Name=\"Category\" SqlType=\"VARCHAR\" Length=\"50\" Nullable=\"1\"/>\n                    <Column Name=\"UnitPrice\" SqlType=\"DECIMAL\" Precision=\"10\" Scale=\"2\" Nullable=\"0\"/>\n                </Property>\n                <Property Name=\"FileFormat\">Delimited</Property>\n                <Property Name=\"ColumnDelimiter\">,</Property>\n                <Property Name=\"FirstLineIsColumnNames\">True</Property>\n                <Property Name=\"FilePath\">#PRODUCTS_PATH#</Property>\n            </Record>\n            \n            <!-- Join Stage: Orders + Customers -->\n            <Record Identifier=\"V0S4\" Type=\"CustomStage\">\n                <Property Name=\"Name\">Join_Orders_Customers</Property>\n                <Property Name=\"StageType\">Join</Property>\n                <Property Name=\"JoinType\">Inner</Property>\n                <Property Name=\"NextStage\">Lookup_Products</Property>\n                <Property Name=\"JoinKeys\">\n                    <JoinKey>\n                        <Property Name=\"LeftColumn\">CustomerID</Property>\n                        <Property Name=\"RightColumn\">CustomerID</Property>\n                    </JoinKey>\n                </Property>\n                <Property Name=\"OutputColumns\">\n                    <Column Source=\"Left\" Name=\"OrderID\"/>\n                    <Column Source=\"Left\" Name=\"CustomerID\"/>\n                    <Column Source=\"Left\" Name=\"ProductID\"/>\n                    <Column Source=\"Left\" Name=\"Quantity\"/>\n                    <Column Source=\"Left\" Name=\"OrderDate\"/>\n                    <Column Source=\"Left\" Name=\"OrderStatus\"/>\n                    <Column Source=\"Right\" Name=\"CustomerName\"/>\n                    <Column Source=\"Right\" Name=\"CustomerSegment\"/>\n                    <Column Source=\"Right\" Name=\"Region\"/>\n                </Property>\n            </Record>\n            \n            <!-- Lookup Stage: Add Product Info -->\n            <Record Identifier=\"V0S5\" Type=\"CustomStage\">\n                <Property Name=\"Name\">Lookup_Products</Property>\n                <Property Name=\"StageType\">Lookup</Property>\n                <Property Name=\"LookupType\">Normal</Property>\n                <Property Name=\"LookupFailureMode\">Continue</Property>\n                <Property Name=\"NextStage\">Transform_Calculate</Property>\n                <Property Name=\"LookupKeys\">\n                    <LookupKey>\n                        <Property Name=\"InputColumn\">ProductID</Property>\n                        <Property Name=\"ReferenceColumn\">ProductID</Property>\n                    </LookupKey>\n                </Property>\n                <Property Name=\"LookupColumns\">\n                    <Column Name=\"ProductName\"/>\n                    <Column Name=\"Category\"/>\n                    <Column Name=\"UnitPrice\"/>\n                </Property>\n                <Property Name=\"DefaultValues\">\n                    <DefaultValue Column=\"ProductName\" Value=\"UNKNOWN\"/>\n                    <DefaultValue Column=\"Category\" Value=\"UNCATEGORIZED\"/>\n                    <DefaultValue Column=\"UnitPrice\" Value=\"0\"/>\n                </Property>\n            </Record>\n            \n            <!-- Transformer: Calculate LineTotal -->\n            <Record Identifier=\"V0S6\" Type=\"CustomStage\">\n                <Property Name=\"Name\">Transform_Calculate</Property>\n                <Property Name=\"StageType\">Transformer</Property>\n                <Property Name=\"NextStage\">Aggregator_Summary</Property>\n                <Property Name=\"Derivations\">\n                    <Derivation>\n                        <Property Name=\"Name\">LineTotal</Property>\n                        <Property Name=\"Expression\">Quantity * UnitPrice</Property>\n                        <Property Name=\"Description\">Calcular total de línea</Property>\n                    </Derivation>\n                    <Derivation>\n                        <Property Name=\"Name\">OrderYear</Property>\n                        <Property Name=\"Expression\">Year(OrderDate)</Property>\n                    </Derivation>\n                    <Derivation>\n                        <Property Name=\"Name\">OrderMonth</Property>\n                        <Property Name=\"Expression\">Month(OrderDate)</Property>\n                    </Derivation>\n                    <Derivation>\n                        <Property Name=\"Name\">CompletedFlag</Property>\n                        <Property Name=\"Expression\">If OrderStatus = \"COMPLETED\" Then 1 Else 0</Property>\n                    </Derivation>\n                </Property>\n                <Property Name=\"Constraints\">\n                    <Constraint>\n                        <Property Name=\"Expression\">Quantity > 0</Property>\n                        <Property Name=\"Description\">Cantidad debe ser positiva</Property>\n                    </Constraint>\n                    <Constraint>\n                        <Property Name=\"Expression\">UnitPrice >= 0</Property>\n                        <Property Name=\"Description\">Precio no puede ser negativo</Property>\n                    </Constraint>\n                </Property>\n            </Record>\n            \n            <!-- Aggregator Stage: Summary by Customer -->\n            <Record Identifier=\"V0S7\" Type=\"CustomStage\">\n                <Property Name=\"Name\">Aggregator_Summary</Property>\n                <Property Name=\"StageType\">Aggregator</Property>\n                <Property Name=\"NextStage\">Sort_Results</Property>\n                <Property Name=\"GroupingKeys\">\n                    <Key Name=\"CustomerID\"/>\n                    <Key Name=\"CustomerName\"/>\n                    <Key Name=\"CustomerSegment\"/>\n                    <Key Name=\"Region\"/>\n                    <Key Name=\"OrderYear\"/>\n                    <Key Name=\"OrderMonth\"/>\n                </Property>\n                <Property Name=\"Aggregations\">\n                    <Aggregation>\n                        <Property Name=\"Name\">TotalOrders</Property>\n                        <Property Name=\"Function\">COUNT</Property>\n                        <Property Name=\"Description\">Número total de órdenes</Property>\n                    </Aggregation>\n                    <Aggregation>\n                        <Property Name=\"Name\">TotalRevenue</Property>\n                        <Property Name=\"Function\">SUM</Property>\n                        <Property Name=\"Column\">LineTotal</Property>\n                        <Property Name=\"Description\">Revenue total</Property>\n                    </Aggregation>\n                    <Aggregation>\n                        <Property Name=\"Name\">AvgOrderValue</Property>\n                        <Property Name=\"Function\">AVG</Property>\n                        <Property Name=\"Column\">LineTotal</Property>\n                    </Aggregation>\n                    <Aggregation>\n                        <Property Name=\"Name\">MinOrderValue</Property>\n                        <Property Name=\"Function\">MIN</Property>\n                        <Property Name=\"Column\">LineTotal</Property>\n                    </Aggregation>\n                    <Aggregation>\n                        <Property Name=\"Name\">MaxOrderValue</Property>\n                        <Property Name=\"Function\">MAX</Property>\n                        <Property Name=\"Column\">LineTotal</Property>\n                    </Aggregation>\n                    <Aggregation>\n                        <Property Name=\"Name\">CompletedOrders</Property>\n                        <Property Name=\"Function\">SUM</Property>\n                        <Property Name=\"Column\">CompletedFlag</Property>\n                    </Aggregation>\n                    <Aggregation>\n                        <Property Name=\"Name\">TotalQuantity</Property>\n                        <Property Name=\"Function\">SUM</Property>\n                        <Property Name=\"Column\">Quantity</Property>\n                    </Aggregation>\n                </Property>\n            </Record>\n            \n            <!-- Sort Stage -->\n            <Record Identifier=\"V0S8\" Type=\"CustomStage\">\n                <Property Name=\"Name\">Sort_Results</Property>\n                <Property Name=\"StageType\">Sort</Property>\n                <Property Name=\"NextStage\">Output_Summary</Property>\n                <Property Name=\"SortKeys\">\n                    <Key Name=\"TotalRevenue\" Direction=\"DESC\"/>\n                    <Key Name=\"CustomerName\" Direction=\"ASC\"/>\n                </Property>\n            </Record>\n            \n            <!-- Output Stage -->\n            <Record Identifier=\"V0S9\" Type=\"CustomStage\">\n                <Property Name=\"Name\">Output_Summary</Property>\n                <Property Name=\"StageType\">Sequential_File</Property>\n                <Property Name=\"StageMode\">Target</Property>\n                <Property Name=\"FileFormat\">Delimited</Property>\n                <Property Name=\"ColumnDelimiter\">,</Property>\n                <Property Name=\"FirstLineIsColumnNames\">True</Property>\n                <Property Name=\"FilePath\">#OUTPUT_PATH#</Property>\n                <Property Name=\"WriteMode\">OVERWRITE</Property>\n            </Record>\n            \n            <!-- Data Flow -->\n            <Property Name=\"DataFlow\">\n                <Stage From=\"Input_Orders\" To=\"Join_Orders_Customers\" Link=\"Left\"/>\n                <Stage From=\"Input_Customers\" To=\"Join_Orders_Customers\" Link=\"Right\"/>\n                <Stage From=\"Join_Orders_Customers\" To=\"Lookup_Products\" Link=\"Main\"/>\n                <Stage From=\"Input_Products\" To=\"Lookup_Products\" Link=\"Reference\"/>\n                <Stage From=\"Lookup_Products\" To=\"Transform_Calculate\"/>\n                <Stage From=\"Transform_Calculate\" To=\"Aggregator_Summary\"/>\n                <Stage From=\"Aggregator_Summary\" To=\"Sort_Results\"/>\n                <Stage From=\"Sort_Results\" To=\"Output_Summary\"/>\n            </Property>\n        </Record>\n    </Job>\n</DSExport>\n\n</DSX_FILE_CONTENT>",
-        "response_length": 3403,
-        "elapsed_sec": 15.04,
-        "output_tokens": 949,
-        "scores": {
-          "keyword_coverage": 0.5,
-          "includes_code": 1.0,
-          "well_structured": 1.0,
-          "category_specific": 0.02,
-          "migration_details": {
-            "syntax_valid": 0.0,
-            "schema_fidelity": 0.0,
-            "transformations": 0.0,
-            "all_stages": 0.0,
-            "parameters": 0.0,
-            "validations": 0.0,
-            "delta_lake": 0.0,
-            "partitioning": 0.0,
-            "error_handling": 0.0,
-            "documentation": 0.02,
-            "notebook_structure": 0.0
-          },
-          "overall": 0.337
-        }
-      },
-      {
-        "test_id": "comp_001",
-        "category": "component_explanation",
-        "difficulty": "easy",
-        "query": "Qué hace un Aggregator stage en DataStage y cómo lo migro?",
-        "response_length": 3124,
-        "elapsed_sec": 9.99,
-        "output_tokens": 764,
-        "scores": {
-          "keyword_coverage": 1.0,
-          "includes_code": 1.0,
-          "well_structured": 1.0,
-          "category_specific": 1.0,
-          "overall": 1.0
-        }
-      },
-      {
-        "test_id": "comp_002",
-        "category": "component_explanation",
-        "difficulty": "easy",
-        "query": "Explica cómo funciona el Transformer stage",
-        "response_length": 3507,
-        "elapsed_sec": 11.34,
-        "output_tokens": 872,
-        "scores": {
-          "keyword_coverage": 0.5,
-          "includes_code": 1.0,
-          "well_structured": 1.0,
-          "category_specific": 1.0,
-          "overall": 0.9249999999999999
-        }
-      },
-      {
-        "test_id": "comp_003",
-        "category": "component_explanation",
-        "difficulty": "medium",
-        "query": "Cómo migro un Join stage con múltiples keys?",
-        "response_length": 2049,
-        "elapsed_sec": 8.54,
-        "output_tokens": 568,
-        "scores": {
-          "keyword_coverage": 0.8571428571428571,
-          "includes_code": 1.0,
-          "well_structured": 1.0,
-          "category_specific": 1.0,
-          "overall": 0.9785714285714285
-        }
-      },
-      {
-        "test_id": "comp_004",
-        "category": "component_explanation",
-        "difficulty": "medium",
-        "query": "Qué es un Lookup stage y cuál es su equivalente en PySpark?",
-        "response_length": 2488,
-        "elapsed_sec": 7.71,
-        "output_tokens": 573,
-        "scores": {
-          "keyword_coverage": 0.75,
-          "includes_code": 1.0,
-          "well_structured": 1.0,
-          "category_specific": 1.0,
-          "overall": 0.9624999999999999
-        }
-      },
-      {
-        "test_id": "pattern_001",
-        "category": "pattern_explanation",
-        "difficulty": "hard",
-        "query": "Cómo implemento Slowly Changing Dimension Type 2 en Databricks?",
-        "response_length": 4423,
-        "elapsed_sec": 14.0,
-        "output_tokens": 1081,
-        "scores": {
-          "keyword_coverage": 0.3333333333333333,
-          "includes_code": 1.0,
-          "well_structured": 1.0,
-          "category_specific": 0.75,
-          "overall": 0.75
-        }
-      },
-      {
-        "test_id": "pattern_002",
-        "category": "pattern_explanation",
-        "difficulty": "hard",
-        "query": "Muéstrame el patrón para implementar CDC (Change Data Capture) incremental",
-        "response_length": 5054,
-        "elapsed_sec": 14.24,
-        "output_tokens": 1294,
-        "scores": {
-          "keyword_coverage": 1.0,
-          "includes_code": 1.0,
-          "well_structured": 1.0,
-          "category_specific": 0.75,
-          "overall": 0.85
-        }
-      },
-      {
-        "test_id": "pattern_003",
-        "category": "pattern_explanation",
-        "difficulty": "medium",
-        "query": "Cómo manejo errores y rechazos en PySpark similar a DataStage?",
-        "response_length": 5852,
-        "elapsed_sec": 17.31,
-        "output_tokens": 1481,
-        "scores": {
-          "keyword_coverage": 0.6,
-          "includes_code": 1.0,
-          "well_structured": 1.0,
-          "category_specific": 0.75,
-          "overall": 0.7899999999999999
-        }
-      },
-      {
-        "test_id": "pattern_004",
-        "category": "pattern_explanation",
-        "difficulty": "medium",
-        "query": "Cuál es el patrón para joins complejos con múltiples tablas?",
-        "response_length": 3123,
-        "elapsed_sec": 10.77,
-        "output_tokens": 789,
-        "scores": {
-          "keyword_coverage": 0.4,
-          "includes_code": 1.0,
-          "well_structured": 1.0,
-          "category_specific": 0.75,
-          "overall": 0.76
-        }
-      },
-      {
-        "test_id": "opt_001",
-        "category": "optimization",
-        "difficulty": "medium",
-        "query": "Cómo optimizo la lectura de archivos CSV grandes en Databricks?",
-        "response_length": 3529,
-        "elapsed_sec": 11.13,
-        "output_tokens": 919,
-        "scores": {
-          "keyword_coverage": 0.8,
-          "includes_code": 1.0,
-          "well_structured": 1.0,
-          "category_specific": 0.6666666666666666,
-          "overall": 0.77
-        }
-      },
-      {
-        "test_id": "opt_002",
-        "category": "optimization",
-        "difficulty": "medium",
-        "query": "Qué optimizaciones debo aplicar al escribir a Delta Lake?",
-        "response_length": 4046,
-        "elapsed_sec": 13.68,
-        "output_tokens": 1021,
-        "scores": {
-          "keyword_coverage": 0.8,
-          "includes_code": 1.0,
-          "well_structured": 1.0,
-          "category_specific": 0.6666666666666666,
-          "overall": 0.77
-        }
-      },
-      {
-        "test_id": "opt_003",
-        "category": "optimization",
-        "difficulty": "hard",
-        "query": "Cómo mejoro el performance de joins grandes?",
-        "response_length": 4435,
-        "elapsed_sec": 15.51,
-        "output_tokens": 1272,
-        "scores": {
-          "keyword_coverage": 1.0,
-          "includes_code": 1.0,
-          "well_structured": 1.0,
-          "category_specific": 1.0,
-          "overall": 1.0
-        }
-      },
-      {
-        "test_id": "trouble_001",
-        "category": "troubleshooting",
-        "difficulty": "medium",
-        "query": "Por qué mi job de DataStage corre rápido pero el equivalente en Spark es lento?",
-        "response_length": 4082,
-        "elapsed_sec": 12.84,
-        "output_tokens": 1058,
-        "scores": {
-          "keyword_coverage": 0.6,
-          "includes_code": 1.0,
-          "well_structured": 1.0,
-          "category_specific": 1.0,
-          "overall": 0.94
-        }
-      },
-      {
-        "test_id": "trouble_002",
-        "category": "troubleshooting",
-        "difficulty": "easy",
-        "query": "Cómo debugueo transformaciones que no dan el resultado esperado?",
-        "response_length": 3283,
-        "elapsed_sec": 12.34,
-        "output_tokens": 810,
-        "scores": {
-          "keyword_coverage": 1.0,
-          "includes_code": 1.0,
-          "well_structured": 1.0,
-          "category_specific": 1.0,
-          "overall": 1.0
-        }
-      },
-      {
-        "test_id": "best_001",
-        "category": "best_practices",
-        "difficulty": "easy",
-        "query": "Cuáles son las mejores prácticas para migrar jobs de DataStage a Databricks?",
-        "response_length": 3714,
-        "elapsed_sec": 12.87,
-        "output_tokens": 955,
-        "scores": {
-          "keyword_coverage": 0.4,
-          "includes_code": 1.0,
-          "well_structured": 1.0,
-          "category_specific": 1.0,
-          "overall": 0.9099999999999999
+          "overall": 0.9416666666666668
         }
       }
     ]

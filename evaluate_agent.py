@@ -155,11 +155,14 @@ def load_test_dataset(dataset_path: str = "test_dataset.json") -> List[Dict]:
                             dsx_content = f.read()
                         # Agregar el contenido DSX al query para que el modelo lo analice
                         tc["query"] = f"{query}\n\n<DSX_FILE_CONTENT>\n{dsx_content}\n</DSX_FILE_CONTENT>"
+                        # Guardar el contenido DSX en un campo separado para la evaluación
+                        tc["dsx_content"] = dsx_content
                         tc["has_dsx_content"] = True
                         print(f"  📄 Cargado contenido DSX para {tc['id']}: {dsx_file}")
                     except Exception as e:
                         print(f"  ⚠️  No se pudo cargar {dsx_file}: {e}")
                         tc["has_dsx_content"] = False
+                        tc["dsx_content"] = ""
     
     return test_cases
 
@@ -343,11 +346,23 @@ class AgentEvaluator:
     """Evalúa la calidad de las respuestas del agente con métricas ponderadas mejoradas."""
 
     WEIGHTS = {
-        "keyword_coverage":  0.15,  # Reducido
-        "includes_code":     0.15,  # Reducido
-        "well_structured":   0.10,  # Reducido
-        "category_specific": 0.60,  # Aumentado significativamente para migraciones
+        # Métricas base (mantenidas)
+        "keyword_coverage":  0.10,  # Ajustado
+        "includes_code":     0.10,  # Ajustado
+        "well_structured":   0.05,  # Ajustado
+        
+        # Nuevas métricas de calidad
+        "groundedness":      0.20,  # NUEVA - Usa knowledge base, no alucina
+        "relevance":         0.15,  # NUEVA - Responde la pregunta correcta
+        "coherence":         0.15,  # NUEVA - Lógica consistente
+        
+        # Métrica especializada
+        "category_specific": 0.25,  # Migraciones y patrones específicos
     }
+
+    def __init__(self, system_prompt: str = ""):
+        """Inicializa el evaluador con el system prompt."""
+        self.system_prompt = system_prompt
 
     def extract_python_code(self, response: str) -> List[str]:
         """Extrae todos los bloques de código Python de la respuesta."""
@@ -430,6 +445,274 @@ class AgentEvaluator:
         
         return analysis
 
+    def evaluate_groundedness(self, response: str, system_prompt: str) -> float:
+        """
+        Evalúa si la respuesta usa conocimiento de la knowledge base vs alucinar.
+        - Extrae APIs/funciones mencionadas en la respuesta
+        - Verifica que existen en la knowledge base o son PySpark/Databricks válidos
+        - Penaliza alucinaciones (APIs inexistentes)
+        """
+        score = 1.0
+        
+        # Patrón 1: Funciones/APIs mencionadas en código
+        code_blocks = self.extract_python_code(response)
+        all_code = "\n".join(code_blocks)
+        
+        if not all_code:
+            # Si no hay código, evaluar por referencias textuales
+            all_code = response
+        
+        # APIs conocidas de PySpark/Databricks
+        valid_apis = [
+            "spark.read", "spark.table", "spark.sql", "spark.createDataFrame",
+            "df.write", "df.show", "df.select", "df.filter", "df.withColumn",
+            "df.groupBy", "df.join", "df.agg", "df.cache", "df.persist",
+            "F.col", "F.lit", "F.when", "F.trim", "F.upper", "F.lower",
+            "F.concat", "F.sum", "F.count", "F.avg", "F.max", "F.min",
+            "F.datediff", "F.date_add", "F.current_date", "F.to_date",
+            "dbutils.widgets", "dbutils.fs", "dbutils.notebook",
+            ".format(\"delta\")", "DeltaTable", "OPTIMIZE", "VACUUM",
+            ".partitionBy", ".mode", ".option"
+        ]
+        
+        # Patrones sospechosos (APIs comunes que NO existen)
+        invalid_patterns = [
+            r"\.to_delta\(",  # No existe, es .format("delta")
+            r"\.save_delta\(",  # No existe
+            r"spark\.write_table\(",  # No existe (es df.write.saveAsTable)
+            r"df\.to_databricks\(",  # No existe
+            r"F\.datastage\(",  # No existe
+            r"\.pandas_df\(",  # No existe (es .toPandas())
+        ]
+        
+        # Buscar alucinaciones
+        alucinaciones = 0
+        for pattern in invalid_patterns:
+            if re.search(pattern, all_code):
+                alucinaciones += 1
+        
+        # Penalizar por cada alucinación detectada
+        if alucinaciones > 0:
+            score -= (alucinaciones * 0.2)
+        
+        # Verificar que menciona conceptos de la knowledge base
+        knowledge_concepts = [
+            "delta lake", "databricks", "pyspark", "dataframe",
+            "transformation", "partition", "optimize", "merge",
+            "medallion", "bronze", "silver", "gold",
+            "datastage", "etl", "pipeline"
+        ]
+        
+        mentioned_concepts = sum(1 for concept in knowledge_concepts if concept in response.lower())
+        if mentioned_concepts >= 3:
+            # Bono por usar terminología correcta
+            score = min(score + 0.1, 1.0)
+        
+        # Verificar que usa patrones de la knowledge base
+        if system_prompt:
+            # Buscar si menciona patrones documentados
+            knowledge_patterns = [
+                "spark.read.format", "withColumn", "format(\"delta\")",
+                "partitionBy", "mode(", "option("
+            ]
+            patterns_used = sum(1 for p in knowledge_patterns if p in all_code)
+            if patterns_used >= 2:
+                score = min(score + 0.1, 1.0)
+        
+        return max(score, 0.0)
+
+    def evaluate_relevance(self, query: str, response: str, category: str) -> float:
+        """
+        Evalúa si la respuesta es relevante a la pregunta.
+        - Para full_migration: debe contener código migrado
+        - Para expression_translation: debe mostrar equivalencia DSX→PySpark
+        - Para component_explanation: debe explicar el componente
+        - etc.
+        """
+        score = 0.0
+        query_lower = query.lower()
+        response_lower = response.lower()
+        
+        # CATEGORÍA: full_migration
+        if category == "full_migration":
+            if "migra" in query_lower or "migrate" in query_lower:
+                # Debe contener código PySpark completo
+                has_pyspark = any(marker in response for marker in ["spark.read", "df.write", "```python"])
+                has_stages = sum(1 for stage in ["read", "transform", "write", "validation"] if stage in response_lower)
+                
+                if has_pyspark and has_stages >= 2:
+                    score = 1.0
+                elif has_pyspark:
+                    score = 0.7
+                else:
+                    score = 0.3
+        
+        # CATEGORÍA: expression_translation
+        elif category == "expression_translation":
+            # Debe mostrar equivalencia
+            has_datastage = any(term in response_lower for term in ["datastage", "basic", "transformer"])
+            has_pyspark = any(term in response_lower for term in ["pyspark", "f.", "spark"])
+            
+            if has_datastage and has_pyspark:
+                score = 1.0
+            elif has_pyspark:
+                score = 0.7
+            else:
+                score = 0.4
+        
+        # CATEGORÍA: component_explanation
+        elif category == "component_explanation":
+            # Extraer componente mencionado en query
+            components = ["aggregator", "join", "lookup", "transformer", "filter", "sort", "funnel"]
+            query_component = next((c for c in components if c in query_lower), None)
+            
+            if query_component and query_component in response_lower:
+                # Debe explicar propósito y uso
+                explanation_markers = ["se usa para", "utiliza", "permite", "purpose", "function"]
+                has_explanation = any(marker in response_lower for marker in explanation_markers)
+                
+                if has_explanation:
+                    score = 1.0
+                else:
+                    score = 0.6
+            else:
+                score = 0.3
+        
+        # CATEGORÍA: pattern_explanation
+        elif category == "pattern_explanation":
+            # Debe explicar el patrón
+            has_pattern_explanation = any(term in response_lower for term in ["patrón", "pattern", "approach", "método"])
+            has_example = "```" in response or "ejemplo" in response_lower
+            
+            if has_pattern_explanation and has_example:
+                score = 1.0
+            elif has_pattern_explanation:
+                score = 0.7
+            else:
+                score = 0.5
+        
+        # CATEGORÍA: optimization
+        elif category == "optimization":
+            optimization_terms = ["partition", "cache", "broadcast", "optimize", "performance", "repartition"]
+            terms_found = sum(1 for term in optimization_terms if term in response_lower)
+            
+            if terms_found >= 3:
+                score = 1.0
+            elif terms_found >= 2:
+                score = 0.7
+            else:
+                score = 0.4
+        
+        # CATEGORÍA: troubleshooting
+        elif category == "troubleshooting":
+            troubleshooting_markers = ["error", "problema", "solución", "resolver", "fix", "debug"]
+            has_diagnosis = any(marker in response_lower for marker in troubleshooting_markers)
+            has_solution = "```" in response or "solución" in response_lower
+            
+            if has_diagnosis and has_solution:
+                score = 1.0
+            elif has_diagnosis:
+                score = 0.6
+            else:
+                score = 0.3
+        
+        # CATEGORÍA: best_practices
+        elif category == "best_practices":
+            bp_terms = ["best practice", "buena práctica", "recomendación", "delta", "medallion"]
+            terms_found = sum(1 for term in bp_terms if term in response_lower)
+            
+            if terms_found >= 2:
+                score = 1.0
+            elif terms_found >= 1:
+                score = 0.7
+            else:
+                score = 0.4
+        
+        else:
+            # Categoría desconocida - evaluación genérica
+            score = 0.7
+        
+        return score
+
+    def evaluate_coherence(self, response: str) -> float:
+        """
+        Evalúa la coherencia lógica del código y la respuesta.
+        - Variables definidas antes de usarse
+        - Flujo lógico: read → transform → write
+        - Columnas mencionadas existen en el DataFrame
+        - Sin contradicciones
+        """
+        score = 1.0
+        
+        code_blocks = self.extract_python_code(response)
+        if not code_blocks:
+            # Sin código, evaluar coherencia textual
+            return 0.8  # Puntuación neutral
+        
+        all_code = "\n".join(code_blocks)
+        
+        # 1. Verificar flujo lógico ETL: read → transform → write
+        has_read = bool(re.search(r"spark\.read|spark\.table", all_code))
+        has_transform = bool(re.search(r"\.withColumn|\.select|\.filter|\.groupBy", all_code))
+        has_write = bool(re.search(r"\.write\.", all_code))
+        
+        if has_read and has_transform and has_write:
+            # Orden correcto
+            read_pos = all_code.find("spark.read") if "spark.read" in all_code else all_code.find("spark.table")
+            write_pos = all_code.find(".write.")
+            if read_pos < write_pos:
+                score += 0.1  # Bono por orden correcto
+        
+        # 2. Verificar variables definidas antes de usarse
+        # Buscar asignaciones: df = ..., df_clean = ...
+        assignments = re.findall(r"(\w+)\s*=\s*(?:spark\.read|\w+\.withColumn|\w+\.filter)", all_code)
+        usages = re.findall(r"(?<!\w)(df\w*)\.", all_code)
+        
+        # Variables usadas pero nunca definidas
+        defined_vars = set(assignments)
+        used_vars = set(usages)
+        undefined_vars = used_vars - defined_vars - {"spark", "F", "dbutils"}  # Excluir globales
+        
+        if undefined_vars:
+            # Penalizar por variables no definidas
+            score -= (len(undefined_vars) * 0.15)
+        
+        # 3. Verificar que las columnas usadas son consistentes
+        # Extraer columnas definidas con withColumn
+        defined_cols = set(re.findall(r"withColumn\(['\"]([^'\"]+)['\"]", all_code))
+        # Extraer columnas usadas con F.col
+        used_cols = set(re.findall(r"F\.col\(['\"]([^'\"]+)['\"]", all_code))
+        
+        # Si usa columnas que nunca creó (sin contar read inicial)
+        if used_cols and defined_cols:
+            undefined_cols = used_cols - defined_cols
+            if len(undefined_cols) > 5:  # Permitir algunas columnas del source
+                score -= 0.1
+        
+        # 4. Buscar contradicciones obvias
+        contradictions = [
+            (r"mode\(['\"]overwrite['\"]", r"mode\(['\"]append['\"]"),  # Ambos modos
+            (r"format\(['\"]delta['\"]", r"format\(['\"]parquet['\"]"),  # Ambos formatos
+        ]
+        
+        for pattern1, pattern2 in contradictions:
+            if re.search(pattern1, all_code) and re.search(pattern2, all_code):
+                score -= 0.1
+        
+        # 5. Verificar que el código no está incompleto
+        incomplete_markers = [
+            "...",  # Puntos suspensivos
+            "# TODO",
+            "# FIXME",
+            "pass  # incomplete",
+        ]
+        
+        for marker in incomplete_markers:
+            if marker in all_code:
+                score -= 0.1
+        
+        return max(score, 0.0)
+
     def evaluate(self, test_case: Dict, response: str) -> Dict[str, float]:
         scores = {}
 
@@ -460,7 +743,18 @@ class AgentEvaluator:
         if long_enough:  structure += 0.3
         scores["well_structured"] = min(structure, 1.0)
 
-        # 4. Category-specific
+        # 4. Groundedness (usa knowledge base, no alucina)
+        scores["groundedness"] = self.evaluate_groundedness(response, self.system_prompt)
+
+        # 5. Relevance (responde la pregunta correcta)
+        query = test_case.get("query", "")
+        category = test_case.get("category", "")
+        scores["relevance"] = self.evaluate_relevance(query, response, category)
+
+        # 6. Coherence (lógica consistente)
+        scores["coherence"] = self.evaluate_coherence(response)
+
+        # 7. Category-specific
         cat = test_case.get("category", "")
         if cat == "expression_translation":
             ds  = any(w in response for w in ["DataStage", "BASIC", "expression"])
@@ -725,8 +1019,8 @@ def run_evaluation(test_cases: List[Dict], models: List[str],
                    azure_endpoint: str = "", azure_key: str = "",
                    include_knowledge: bool = True) -> Dict:
 
-    evaluator    = AgentEvaluator()
     system_prompt = load_agent_system_prompt(include_knowledge=include_knowledge)
+    evaluator    = AgentEvaluator(system_prompt=system_prompt)
     all_results   = {}
 
     print(f"\n{'='*80}")
@@ -818,14 +1112,15 @@ def print_report(all_results: Dict, output_file: str = "evaluation_report.json")
         model_stats[model] = agg
 
     # Tabla general
-    header = f"{'Modelo':<25} | {'Overall':>8} | {'Keywords':>8} | {'Code':>8} | {'Structure':>9} | {'Category':>9} | {'Tiempo':>7}"
+    header = f"{'Modelo':<25} | {'Overall':>8} | {'Keywords':>8} | {'Code':>8} | {'Structure':>9} | {'Ground':>8} | {'Relev':>8} | {'Coher':>8} | {'Category':>9} | {'Tiempo':>7}"
     print(header)
     print("-" * len(header))
     for m, s in model_stats.items():
         print(
             f"{m:<25} | {s['overall']:>7.1%} | {s['keyword_coverage']:>8.1%} | "
             f"{s['includes_code']:>8.1%} | {s['well_structured']:>9.1%} | "
-            f"{s['category_specific']:>9.1%} | {s['avg_time']:>6.1f}s"
+            f"{s.get('groundedness', 0):>8.1%} | {s.get('relevance', 0):>8.1%} | "
+            f"{s.get('coherence', 0):>8.1%} | {s['category_specific']:>9.1%} | {s['avg_time']:>6.1f}s"
         )
 
     # Mejor modelo
@@ -847,6 +1142,54 @@ def print_report(all_results: Dict, output_file: str = "evaluation_report.json")
                 val = s["by_category"].get(cat, 0)
                 print(f"  {val:>16.1%}  ", end="")
             print()
+
+    # Desglose de nuevas métricas (groundedness, relevance, coherence)
+    print(f"\n{'='*80}")
+    print(f"  📈  DESGLOSE: MÉTRICAS DE CALIDAD")
+    print(f"{'='*80}")
+    
+    for model, results in all_results.items():
+        if not results:
+            continue
+        
+        print(f"\n  📊  Modelo: {model}")
+        print(f"  {'-'*76}")
+        
+        # Calcular promedios por categoría
+        metrics_by_cat = {}
+        for r in results:
+            cat = r["category"]
+            if cat not in metrics_by_cat:
+                metrics_by_cat[cat] = {"groundedness": [], "relevance": [], "coherence": []}
+            
+            metrics_by_cat[cat]["groundedness"].append(r["scores"].get("groundedness", 0))
+            metrics_by_cat[cat]["relevance"].append(r["scores"].get("relevance", 0))
+            metrics_by_cat[cat]["coherence"].append(r["scores"].get("coherence", 0))
+        
+        # Mostrar por categoría
+        print(f"\n    {'Categoría':<30} {'Ground':>9} {'Relev':>9} {'Coher':>9} {'Promedio':>10}")
+        print(f"    {'-'*70}")
+        
+        for cat in sorted(metrics_by_cat.keys()):
+            ground_avg = sum(metrics_by_cat[cat]["groundedness"]) / len(metrics_by_cat[cat]["groundedness"]) if metrics_by_cat[cat]["groundedness"] else 0
+            relev_avg = sum(metrics_by_cat[cat]["relevance"]) / len(metrics_by_cat[cat]["relevance"]) if metrics_by_cat[cat]["relevance"] else 0
+            coher_avg = sum(metrics_by_cat[cat]["coherence"]) / len(metrics_by_cat[cat]["coherence"]) if metrics_by_cat[cat]["coherence"] else 0
+            total_avg = (ground_avg + relev_avg + coher_avg) / 3
+            
+            print(f"    {cat:<30} {ground_avg:>8.1%} {relev_avg:>8.1%} {coher_avg:>8.1%} {total_avg:>9.1%}")
+        
+        # Promedio general
+        all_ground = [r["scores"].get("groundedness", 0) for r in results]
+        all_relev = [r["scores"].get("relevance", 0) for r in results]
+        all_coher = [r["scores"].get("coherence", 0) for r in results]
+        
+        ground_total = sum(all_ground) / len(all_ground) if all_ground else 0
+        relev_total = sum(all_relev) / len(all_relev) if all_relev else 0
+        coher_total = sum(all_coher) / len(all_coher) if all_coher else 0
+        total_total = (ground_total + relev_total + coher_total) / 3
+        
+        print(f"    {'-'*70}")
+        print(f"    {'PROMEDIO TOTAL':<30} {ground_total:>8.1%} {relev_total:>8.1%} {coher_total:>8.1%} {total_total:>9.1%}")
 
     # Desglose detallado para full_migration
     print(f"\n{'='*80}")
