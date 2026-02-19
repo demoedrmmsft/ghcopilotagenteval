@@ -1,0 +1,57 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+
+# Databricks
+.databricks/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Temporary files
+*.tmp
+.cache/
+*.bak
+
+# Sensitive data - DO NOT COMMIT
+*.dsx.backup
+private-keys/
+secrets/
+.env
+.env.local
+
+# Build artifacts (if using extension version - not needed for declarative agent)
+node_modules/
+dist/
+build/
+*.tsbuildinfo
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+tsconfig.json
+package.json
+src/
+
+# Extension config files (not needed for declarative agent)
+copilot-extension.json
+github-app-manifest.json
+openapi.json
+.env.example

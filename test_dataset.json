@@ -1,0 +1,193 @@
+{
+  "test_cases": [
+    {
+      "id": "expr_001",
+      "category": "expression_translation",
+      "query": "Traduce esta expresión de DataStage a PySpark: Trim(Upcase(FirstName)) : \" \" : Trim(Upcase(LastName))",
+      "expected_keywords": ["F.concat", "F.trim", "F.upper", "F.col"],
+      "must_have_code": true,
+      "min_length": 50,
+      "difficulty": "easy"
+    },
+    {
+      "id": "expr_002",
+      "category": "expression_translation",
+      "query": "Cómo traduzco: If IsNull(Status) Then \"UNKNOWN\" Else Upcase(Trim(Status))",
+      "expected_keywords": ["F.when", "isNull", "otherwise", "F.upper", "F.trim"],
+      "must_have_code": true,
+      "min_length": 80,
+      "difficulty": "easy"
+    },
+    {
+      "id": "expr_003",
+      "category": "expression_translation",
+      "query": "Traduce: YearsFromDate(BirthDate)",
+      "expected_keywords": ["F.months_between", "F.current_date", "floor", "/", "12"],
+      "must_have_code": true,
+      "min_length": 60,
+      "difficulty": "medium"
+    },
+    {
+      "id": "expr_004",
+      "category": "expression_translation",
+      "query": "Traduce: DaysSince(RegistrationDate)",
+      "expected_keywords": ["F.datediff", "F.current_date"],
+      "must_have_code": true,
+      "min_length": 40,
+      "difficulty": "easy"
+    },
+    {
+      "id": "expr_005",
+      "category": "expression_translation",
+      "query": "Cómo convierto esta expresión compleja: If IsNull(Amount) Then 0 Else If Amount < 0 Then 0 Else Amount",
+      "expected_keywords": ["F.when", "isNull", "otherwise", "F.col"],
+      "must_have_code": true,
+      "min_length": 100,
+      "difficulty": "medium"
+    },
+    {
+      "id": "full_001",
+      "category": "full_migration",
+      "query": "Migra el archivo test-artifacts/01_simple_customer_etl.dsx a Databricks",
+      "expected_keywords": ["spark.read", "withColumn", "Delta Lake", "write.format", "filter", "dbutils.widgets"],
+      "must_have_code": true,
+      "min_length": 500,
+      "difficulty": "hard"
+    },
+    {
+      "id": "full_002",
+      "category": "full_migration",
+      "query": "Analiza la complejidad de test-artifacts/02_order_processing_join.dsx",
+      "expected_keywords": ["join", "stages", "complexity", "transformations"],
+      "must_have_code": false,
+      "min_length": 200,
+      "difficulty": "medium"
+    },
+    {
+      "id": "comp_001",
+      "category": "component_explanation",
+      "query": "Qué hace un Aggregator stage en DataStage y cómo lo migro?",
+      "expected_keywords": ["groupBy", "agg", "sum", "count", "max", "min", "avg"],
+      "must_have_code": true,
+      "min_length": 150,
+      "difficulty": "easy"
+    },
+    {
+      "id": "comp_002",
+      "category": "component_explanation",
+      "query": "Explica cómo funciona el Transformer stage",
+      "expected_keywords": ["withColumn", "transformations", "derivations", "constraints"],
+      "must_have_code": true,
+      "min_length": 150,
+      "difficulty": "easy"
+    },
+    {
+      "id": "comp_003",
+      "category": "component_explanation",
+      "query": "Cómo migro un Join stage con múltiples keys?",
+      "expected_keywords": ["join", "inner", "left", "right", "on", "multiple", "keys"],
+      "must_have_code": true,
+      "min_length": 200,
+      "difficulty": "medium"
+    },
+    {
+      "id": "comp_004",
+      "category": "component_explanation",
+      "query": "Qué es un Lookup stage y cuál es su equivalente en PySpark?",
+      "expected_keywords": ["join", "broadcast", "left_join", "lookup"],
+      "must_have_code": true,
+      "min_length": 150,
+      "difficulty": "medium"
+    },
+    {
+      "id": "pattern_001",
+      "category": "pattern_explanation",
+      "query": "Cómo implemento Slowly Changing Dimension Type 2 en Databricks?",
+      "expected_keywords": ["MERGE", "effective_date", "end_date", "is_current", "window", "SCD"],
+      "must_have_code": true,
+      "min_length": 300,
+      "difficulty": "hard"
+    },
+    {
+      "id": "pattern_002",
+      "category": "pattern_explanation",
+      "query": "Muéstrame el patrón para implementar CDC (Change Data Capture) incremental",
+      "expected_keywords": ["MERGE", "watermark", "incremental", "upsert", "Delta"],
+      "must_have_code": true,
+      "min_length": 300,
+      "difficulty": "hard"
+    },
+    {
+      "id": "pattern_003",
+      "category": "pattern_explanation",
+      "query": "Cómo manejo errores y rechazos en PySpark similar a DataStage?",
+      "expected_keywords": ["try", "except", "filter", "validation", "reject"],
+      "must_have_code": true,
+      "min_length": 250,
+      "difficulty": "medium"
+    },
+    {
+      "id": "pattern_004",
+      "category": "pattern_explanation",
+      "query": "Cuál es el patrón para joins complejos con múltiples tablas?",
+      "expected_keywords": ["join", "broadcast", "chain", "multiple", "optimize"],
+      "must_have_code": true,
+      "min_length": 250,
+      "difficulty": "medium"
+    },
+    {
+      "id": "opt_001",
+      "category": "optimization",
+      "query": "Cómo optimizo la lectura de archivos CSV grandes en Databricks?",
+      "expected_keywords": ["partition", "schema", "inferSchema", "multiline", "coalesce"],
+      "must_have_code": true,
+      "min_length": 200,
+      "difficulty": "medium"
+    },
+    {
+      "id": "opt_002",
+      "category": "optimization",
+      "query": "Qué optimizaciones debo aplicar al escribir a Delta Lake?",
+      "expected_keywords": ["OPTIMIZE", "Z-ORDER", "partitionBy", "autoCompact", "AQE"],
+      "must_have_code": true,
+      "min_length": 250,
+      "difficulty": "medium"
+    },
+    {
+      "id": "opt_003",
+      "category": "optimization",
+      "query": "Cómo mejoro el performance de joins grandes?",
+      "expected_keywords": ["broadcast", "skew", "salting", "AQE", "shuffle"],
+      "must_have_code": true,
+      "min_length": 200,
+      "difficulty": "hard"
+    },
+    {
+      "id": "trouble_001",
+      "category": "troubleshooting",
+      "query": "Por qué mi job de DataStage corre rápido pero el equivalente en Spark es lento?",
+      "expected_keywords": ["shuffle", "partitions", "broadcast", "cache", "persist"],
+      "must_have_code": false,
+      "min_length": 250,
+      "difficulty": "medium"
+    },
+    {
+      "id": "trouble_002",
+      "category": "troubleshooting",
+      "query": "Cómo debugueo transformaciones que no dan el resultado esperado?",
+      "expected_keywords": ["display", "show", "printSchema", "explain", "count"],
+      "must_have_code": true,
+      "min_length": 200,
+      "difficulty": "easy"
+    },
+    {
+      "id": "best_001",
+      "category": "best_practices",
+      "query": "Cuáles son las mejores prácticas para migrar jobs de DataStage a Databricks?",
+      "expected_keywords": ["Delta Lake", "incremental", "validation", "testing", "monitoring"],
+      "must_have_code": false,
+      "min_length": 300,
+      "difficulty": "easy"
+    }
+  ]
+}

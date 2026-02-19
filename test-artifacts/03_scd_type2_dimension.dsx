@@ -1,0 +1,281 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+DataStage Job: Customer_Dimension_SCD2
+Description: Slowly Changing Dimension Type 2 para tabla de clientes
+Complejidad: Alta
+Propósito: Validar migración de Change Capture y lógica SCD Type 2
+-->
+<DSExport>
+    <Job Identifier="Customer_Dimension_SCD2" DateModified="2024-01-15" TimeModified="14:30:00">
+        <Record Identifier="JOB" Type="ServerJob" Readonly="0">
+            <Property Name="Name">Customer_Dimension_SCD2</Property>
+            <Property Name="Description">Mantiene historial de cambios en dimensión de clientes (SCD Type 2)</Property>
+            <Property Name="JobVersion">2.0</Property>
+            <Property Name="Parameters">
+                <Parameter>
+                    <Property Name="Name">SOURCE_TABLE</Property>
+                    <Property Name="DefaultValue">source_customers</Property>
+                </Parameter>
+                <Parameter>
+                    <Property Name="Name">TARGET_TABLE</Property>
+                    <Property Name="DefaultValue">dim_customer</Property>
+                </Parameter>
+                <Parameter>
+                    <Property Name="Name">DATABASE_SERVER</Property>
+                    <Property Name="DefaultValue">jdbc:postgresql://server:5432/dwh</Property>
+                </Parameter>
+            </Property>
+            
+            <!-- Input: Source Data (Current State) -->
+            <Record Identifier="V0S1" Type="CustomStage">
+                <Property Name="Name">Source_Customers</Property>
+                <Property Name="StageType">ODBC_Connector</Property>
+                <Property Name="StageMode">Source</Property>
+                <Property Name="NextStage">Transform_AddMetadata</Property>
+                <Property Name="Connection">
+                    <Property Name="ConnectionString">#DATABASE_SERVER#</Property>
+                    <Property Name="TableName">#SOURCE_TABLE#</Property>
+                </Property>
+                <Property Name="Columns">
+                    <Column Name="CustomerID" SqlType="INTEGER" PrimaryKey="1"/>
+                    <Column Name="CustomerName" SqlType="VARCHAR" Length="100"/>
+                    <Column Name="Email" SqlType="VARCHAR" Length="100"/>
+                    <Column Name="Phone" SqlType="VARCHAR" Length="20"/>
+                    <Column Name="Address" SqlType="VARCHAR" Length="200"/>
+                    <Column Name="City" SqlType="VARCHAR" Length="50"/>
+                    <Column Name="State" SqlType="VARCHAR" Length="50"/>
+                    <Column Name="Country" SqlType="VARCHAR" Length="50"/>
+                    <Column Name="CustomerSegment" SqlType="VARCHAR" Length="30"/>
+                </Property>
+            </Record>
+            
+            <!-- Input: Current Dimension (Historical Data) -->
+            <Record Identifier="V0S2" Type="CustomStage">
+                <Property Name="Name">Current_Dimension</Property>
+                <Property Name="StageType">ODBC_Connector</Property>
+                <Property Name="StageMode">Source</Property>
+                <Property Name="NextStage">Change_Capture</Property>
+                <Property Name="Connection">
+                    <Property Name="ConnectionString">#DATABASE_SERVER#</Property>
+                    <Property Name="TableName">#TARGET_TABLE#</Property>
+                    <Property Name="WhereClause">IsCurrent = 1</Property>
+                </Property>
+                <Property Name="Columns">
+                    <Column Name="DimensionKey" SqlType="INTEGER" PrimaryKey="1"/>
+                    <Column Name="CustomerID" SqlType="INTEGER"/>
+                    <Column Name="CustomerName" SqlType="VARCHAR" Length="100"/>
+                    <Column Name="Email" SqlType="VARCHAR" Length="100"/>
+                    <Column Name="Phone" SqlType="VARCHAR" Length="20"/>
+                    <Column Name="Address" SqlType="VARCHAR" Length="200"/>
+                    <Column Name="City" SqlType="VARCHAR" Length="50"/>
+                    <Column Name="State" SqlType="VARCHAR" Length="50"/>
+                    <Column Name="Country" SqlType="VARCHAR" Length="50"/>
+                    <Column Name="CustomerSegment" SqlType="VARCHAR" Length="30"/>
+                    <Column Name="EffectiveDate" SqlType="TIMESTAMP"/>
+                    <Column Name="EndDate" SqlType="TIMESTAMP" Nullable="1"/>
+                    <Column Name="IsCurrent" SqlType="INTEGER"/>
+                    <Column Name="RecordVersion" SqlType="INTEGER"/>
+                </Property>
+            </Record>
+            
+            <!-- Transformer: Add SCD Metadata to Source -->
+            <Record Identifier="V0S3" Type="CustomStage">
+                <Property Name="Name">Transform_AddMetadata</Property>
+                <Property Name="StageType">Transformer</Property>
+                <Property Name="NextStage">Change_Capture</Property>
+                <Property Name="Derivations">
+                    <Derivation>
+                        <Property Name="Name">EffectiveDate</Property>
+                        <Property Name="Expression">CurrentTimestamp()</Property>
+                    </Derivation>
+                    <Derivation>
+                        <Property Name="Name">EndDate</Property>
+                        <Property Name="Expression">@NULL</Property>
+                    </Derivation>
+                    <Derivation>
+                        <Property Name="Name">IsCurrent</Property>
+                        <Property Name="Expression">1</Property>
+                    </Derivation>
+                    <Derivation>
+                        <Property Name="Name">RecordVersion</Property>
+                        <Property Name="Expression">1</Property>
+                    </Derivation>
+                </Property>
+            </Record>
+            
+            <!-- Change Capture Stage -->
+            <Record Identifier="V0S4" Type="CustomStage">
+                <Property Name="Name">Change_Capture</Property>
+                <Property Name="StageType">Change_Capture</Property>
+                <Property Name="NextStage">Transform_SCD_Logic</Property>
+                <Property Name="CompareKey">
+                    <Key Name="CustomerID"/>
+                </Property>
+                <Property Name="CompareColumns">
+                    <Column Name="CustomerName"/>
+                    <Column Name="Email"/>
+                    <Column Name="Phone"/>
+                    <Column Name="Address"/>
+                    <Column Name="City"/>
+                    <Column Name="State"/>
+                    <Column Name="Country"/>
+                    <Column Name="CustomerSegment"/>
+                </Property>
+                <Property Name="ChangeDetectionMode">ExplicitKeys</Property>
+                <Property Name="OutputLinks">
+                    <Link Name="Insert" Description="Nuevos registros"/>
+                    <Link Name="Update" Description="Registros con cambios"/>
+                    <Link Name="Delete" Description="Registros eliminados"/>
+                    <Link Name="Copy" Description="Registros sin cambios"/>
+                </Property>
+            </Record>
+            
+            <!-- Transformer: SCD Type 2 Logic -->
+            <Record Identifier="V0S5" Type="CustomStage">
+                <Property Name="Name">Transform_SCD_Logic</Property>
+                <Property Name="StageType">Transformer</Property>
+                <Property Name="Description">Aplica lógica de SCD Type 2</Property>
+                <Property Name="StageVariables">
+                    <Variable>
+                        <Property Name="Name">svCurrentVersion</Property>
+                        <Property Name="InitialValue">0</Property>
+                        <Property Name="Expression">If DSLink2.CustomerID = CustomerID Then svCurrentVersion + 1 Else 1</Property>
+                        <Property Name="Description">Versión del registro</Property>
+                    </Variable>
+                </Property>
+                <Property Name="OutputLinks">
+                    <Link Name="NewRecords" Description="Inserts y nuevas versiones">
+                        <Constraint>
+                            <Property Name="Expression">@INROWNUM = 0 OR CDC_ChangeType = "I" OR CDC_ChangeType = "U"</Property>
+                        </Constraint>
+                        <Property Name="NextStage">Insert_NewVersions</Property>
+                    </Link>
+                    <Link Name="ExpireRecords" Description="Cerrar registros obsoletos">
+                        <Constraint>
+                            <Property Name="Expression">CDC_ChangeType = "U" OR CDC_ChangeType = "D"</Property>
+                        </Constraint>
+                        <Property Name="NextStage">Update_ExpireRecords</Property>
+                    </Link>
+                </Property>
+                <Property Name="Derivations">
+                    <Derivation>
+                        <Property Name="Name">CDC_ChangeType</Property>
+                        <Property Name="Expression">CDC_ChangeType</Property>
+                        <Property Name="Description">I=Insert, U=Update, D=Delete, C=Copy</Property>
+                    </Derivation>
+                    <Derivation>
+                        <Property Name="Name">DimensionKey</Property>
+                        <Property Name="Expression">NextSurrogateKey()</Property>
+                        <Property Name="Description">Nueva surrogate key</Property>
+                    </Derivation>
+                    <Derivation>
+                        <Property Name="Name">RecordVersion</Property>
+                        <Property Name="Expression">svCurrentVersion</Property>
+                    </Derivation>
+                    <Derivation>
+                        <Property Name="Name">EffectiveDate</Property>
+                        <Property Name="Expression">CurrentTimestamp()</Property>
+                    </Derivation>
+                    <Derivation>
+                        <Property Name="Name">EndDate</Property>
+                        <Property Name="Expression">@NULL</Property>
+                    </Derivation>
+                    <Derivation>
+                        <Property Name="Name">IsCurrent</Property>
+                        <Property Name="Expression">1</Property>
+                    </Derivation>
+                </Property>
+            </Record>
+            
+            <!-- Output: Insert New Versions -->
+            <Record Identifier="V0S6" Type="CustomStage">
+                <Property Name="Name">Insert_NewVersions</Property>
+                <Property Name="StageType">ODBC_Connector</Property>
+                <Property Name="StageMode">Target</Property>
+                <Property Name="Connection">
+                    <Property Name="ConnectionString">#DATABASE_SERVER#</Property>
+                    <Property Name="TableName">#TARGET_TABLE#</Property>
+                    <Property Name="WriteMode">INSERT</Property>
+                </Property>
+            </Record>
+            
+            <!-- Transformer: Prepare Update for Expiring Records -->
+            <Record Identifier="V0S7" Type="CustomStage">
+                <Property Name="Name">Transform_PrepareExpire</Property>
+                <Property Name="StageType">Transformer</Property>
+                <Property Name="NextStage">Update_ExpireRecords</Property>
+                <Property Name="Derivations">
+                    <Derivation>
+                        <Property Name="Name">EndDate</Property>
+                        <Property Name="Expression">CurrentTimestamp()</Property>
+                        <Property Name="Description">Cerrar registro con timestamp actual</Property>
+                    </Derivation>
+                    <Derivation>
+                        <Property Name="Name">IsCurrent</Property>
+                        <Property Name="Expression">0</Property>
+                        <Property Name="Description">Marcar como no vigente</Property>
+                    </Derivation>
+                </Property>
+            </Record>
+            
+            <!-- Output: Update Expired Records -->
+            <Record Identifier="V0S8" Type="CustomStage">
+                <Property Name="Name">Update_ExpireRecords</Property>
+                <Property Name="StageType">ODBC_Connector</Property>
+                <Property Name="StageMode">Target</Property>
+                <Property Name="Connection">
+                    <Property Name="ConnectionString">#DATABASE_SERVER#</Property>
+                    <Property Name="TableName">#TARGET_TABLE#</Property>
+                    <Property Name="WriteMode">UPDATE</Property>
+                    <Property Name="UpdateKeys">
+                        <Key Name="DimensionKey"/>
+                    </Property>
+                    <Property Name="UpdateColumns">
+                        <Column Name="EndDate"/>
+                        <Column Name="IsCurrent"/>
+                    </Property>
+                </Property>
+            </Record>
+            
+            <!-- Data Flow -->
+            <Property Name="DataFlow">
+                <Stage From="Source_Customers" To="Transform_AddMetadata"/>
+                <Stage From="Transform_AddMetadata" To="Change_Capture" Link="Before"/>
+                <Stage From="Current_Dimension" To="Change_Capture" Link="After"/>
+                <Stage From="Change_Capture" To="Transform_SCD_Logic"/>
+                <Stage From="Transform_SCD_Logic" To="Insert_NewVersions" OutputLink="NewRecords"/>
+                <Stage From="Transform_SCD_Logic" To="Transform_PrepareExpire" OutputLink="ExpireRecords"/>
+                <Stage From="Transform_PrepareExpire" To="Update_ExpireRecords"/>
+            </Property>
+            
+            <!-- Job Control -->
+            <Property Name="BeforeJob">
+                <Action Type="SQL">
+                    <Property Name="SQL">
+                        CREATE INDEX IF NOT EXISTS idx_customer_current 
+                        ON #TARGET_TABLE# (CustomerID) WHERE IsCurrent = 1;
+                    </Property>
+                </Action>
+            </Property>
+            <Property Name="AfterJob">
+                <Action Type="SQL">
+                    <Property Name="SQL">
+                        -- Validar que cada CustomerID tenga solo un registro actual
+                        SELECT CustomerID, COUNT(*) as current_count
+                        FROM #TARGET_TABLE#
+                        WHERE IsCurrent = 1
+                        GROUP BY CustomerID
+                        HAVING COUNT(*) > 1;
+                    </Property>
+                    <Property Name="OnError">ABORT</Property>
+                </Action>
+                <Action Type="SQL">
+                    <Property Name="SQL">
+                        -- Optimizar tabla
+                        ANALYZE #TARGET_TABLE#;
+                    </Property>
+                </Action>
+            </Property>
+        </Record>
+    </Job>
+</DSExport>

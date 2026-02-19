@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+DataStage Job: Simple_Customer_ETL
+Description: Lee archivo CSV de clientes, limpia datos y exporta resultado
+Complejidad: Básica
+Propósito: Validar traducción básica de read → transform → write
+-->
+<DSExport>
+    <Job Identifier="Simple_Customer_ETL" DateModified="2024-01-15" TimeModified="10:30:00">
+        <Record Identifier="JOB" Type="ServerJob" Readonly="0">
+            <Property Name="Name">Simple_Customer_ETL</Property>
+            <Property Name="Description">Procesa archivo de clientes - limpia y exporta</Property>
+            <Property Name="JobVersion">1.0</Property>
+            <Property Name="Parameters">
+                <Parameter>
+                    <Property Name="Name">INPUT_FILE_PATH</Property>
+                    <Property Name="DefaultValue">/data/input/customers.csv</Property>
+                    <Property Name="Description">Ruta del archivo de entrada</Property>
+                </Parameter>
+                <Parameter>
+                    <Property Name="Name">OUTPUT_FILE_PATH</Property>
+                    <Property Name="DefaultValue">/data/output/customers_clean.csv</Property>
+                    <Property Name="Description">Ruta del archivo de salida</Property>
+                </Parameter>
+                <Parameter>
+                    <Property Name="Name">RUN_DATE</Property>
+                    <Property Name="DefaultValue">#{CurrentDate}</Property>
+                    <Property Name="Description">Fecha de ejecución</Property>
+                </Parameter>
+            </Property>
+            
+            <!-- Stage Definitions -->
+            <Record Identifier="V0S1" Type="CustomStage">
+                <Property Name="Name">Input_Customers</Property>
+                <Property Name="StageType">Sequential_File</Property>
+                <Property Name="StageMode">Source</Property>
+                <Property Name="NextStage">Transform_Clean</Property>
+                <Property Name="Columns">
+                    <Column Name="CustomerID" SqlType="INTEGER" Nullable="0"/>
+                    <Column Name="FirstName" SqlType="VARCHAR" Length="50" Nullable="1"/>
+                    <Column Name="LastName" SqlType="VARCHAR" Length="50" Nullable="1"/>
+                    <Column Name="Email" SqlType="VARCHAR" Length="100" Nullable="1"/>
+                    <Column Name="BirthDate" SqlType="DATE" Nullable="1"/>
+                    <Column Name="Status" SqlType="VARCHAR" Length="20" Nullable="1"/>
+                    <Column Name="RegistrationDate" SqlType="DATE" Nullable="1"/>
+                </Property>
+                <Property Name="FileFormat">Delimited</Property>
+                <Property Name="ColumnDelimiter">,</Property>
+                <Property Name="QuoteCharacter">"</Property>
+                <Property Name="FirstLineIsColumnNames">True</Property>
+                <Property Name="FilePath">#INPUT_FILE_PATH#</Property>
+            </Record>
+            
+            <Record Identifier="V0S2" Type="CustomStage">
+                <Property Name="Name">Transform_Clean</Property>
+                <Property Name="StageType">Transformer</Property>
+                <Property Name="NextStage">Output_Customers</Property>
+                <Property Name="Derivations">
+                    <Derivation>
+                        <Property Name="Name">CustomerID</Property>
+                        <Property Name="Expression">CustomerID</Property>
+                    </Derivation>
+                    <Derivation>
+                        <Property Name="Name">FullName</Property>
+                        <Property Name="Expression">Trim(Upcase(FirstName)) : " " : Trim(Upcase(LastName))</Property>
+                        <Property Name="Description">Concatenar y limpiar nombre completo</Property>
+                    </Derivation>
+                    <Derivation>
+                        <Property Name="Name">EmailClean</Property>
+                        <Property Name="Expression">Downcase(Trim(Email))</Property>
+                        <Property Name="Description">Normalizar email a minúsculas</Property>
+                    </Derivation>
+                    <Derivation>
+                        <Property Name="Name">Age</Property>
+                        <Property Name="Expression">YearsFromDate(BirthDate)</Property>
+                        <Property Name="Description">Calcular edad desde fecha de nacimiento</Property>
+                    </Derivation>
+                    <Derivation>
+                        <Property Name="Name">Status</Property>
+                        <Property Name="Expression">If IsNull(Status) Then "UNKNOWN" Else Upcase(Trim(Status))</Property>
+                        <Property Name="Description">Manejar status nulo</Property>
+                    </Derivation>
+                    <Derivation>
+                        <Property Name="Name">DaysSinceRegistration</Property>
+                        <Property Name="Expression">DaysSince(RegistrationDate)</Property>
+                        <Property Name="Description">Días desde registro</Property>
+                    </Derivation>
+                    <Derivation>
+                        <Property Name="Name">ProcessDate</Property>
+                        <Property Name="Expression">#RUN_DATE#</Property>
+                        <Property Name="Description">Fecha de procesamiento</Property>
+                    </Derivation>
+                </Property>
+                <Property Name="Constraints">
+                    <Constraint>
+                        <Property Name="Expression">NOT(IsNull(CustomerID))</Property>
+                        <Property Name="Description">CustomerID no puede ser nulo</Property>
+                    </Constraint>
+                    <Constraint>
+                        <Property Name="Expression">NOT(IsNull(Email))</Property>
+                        <Property Name="Description">Email no puede ser nulo</Property>
+                    </Constraint>
+                    <Constraint>
+                        <Property Name="Expression">Status = "ACTIVE" OR Status = "INACTIVE" OR Status = "UNKNOWN"</Property>
+                        <Property Name="Description">Status debe ser valor válido</Property>
+                    </Constraint>
+                </Property>
+            </Record>
+            
+            <Record Identifier="V0S3" Type="CustomStage">
+                <Property Name="Name">Output_Customers</Property>
+                <Property Name="StageType">Sequential_File</Property>
+                <Property Name="StageMode">Target</Property>
+                <Property Name="Columns">
+                    <Column Name="CustomerID" SqlType="INTEGER"/>
+                    <Column Name="FullName" SqlType="VARCHAR" Length="100"/>
+                    <Column Name="EmailClean" SqlType="VARCHAR" Length="100"/>
+                    <Column Name="Age" SqlType="INTEGER"/>
+                    <Column Name="Status" SqlType="VARCHAR" Length="20"/>
+                    <Column Name="DaysSinceRegistration" SqlType="INTEGER"/>
+                    <Column Name="ProcessDate" SqlType="DATE"/>
+                </Property>
+                <Property Name="FileFormat">Delimited</Property>
+                <Property Name="ColumnDelimiter">,</Property>
+                <Property Name="QuoteCharacter">"</Property>
+                <Property Name="FirstLineIsColumnNames">True</Property>
+                <Property Name="FilePath">#OUTPUT_FILE_PATH#</Property>
+                <Property Name="WriteMode">OVERWRITE</Property>
+            </Record>
+            
+            <!-- Data Flow -->
+            <Property Name="DataFlow">
+                <Stage From="Input_Customers" To="Transform_Clean"/>
+                <Stage From="Transform_Clean" To="Output_Customers"/>
+            </Property>
+        </Record>
+    </Job>
+</DSExport>

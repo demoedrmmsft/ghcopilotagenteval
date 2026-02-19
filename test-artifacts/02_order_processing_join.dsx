@@ -1,0 +1,264 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+DataStage Job: Order_Processing_With_Join
+Description: Join orders con customers y products, calcular totales
+Complejidad: Media
+Propósito: Validar joins múltiples y aggregations
+-->
+<DSExport>
+    <Job Identifier="Order_Processing_With_Join" DateModified="2024-01-15" TimeModified="11:00:00">
+        <Record Identifier="JOB" Type="ServerJob" Readonly="0">
+            <Property Name="Name">Order_Processing_With_Join</Property>
+            <Property Name="Description">Procesa órdenes con joins a customers y products, agrega totales</Property>
+            <Property Name="JobVersion">1.0</Property>
+            <Property Name="Parameters">
+                <Parameter>
+                    <Property Name="Name">ORDERS_PATH</Property>
+                    <Property Name="DefaultValue">/data/input/orders.csv</Property>
+                </Parameter>
+                <Parameter>
+                    <Property Name="Name">CUSTOMERS_PATH</Property>
+                    <Property Name="DefaultValue">/data/input/customers.csv</Property>
+                </Parameter>
+                <Parameter>
+                    <Property Name="Name">PRODUCTS_PATH</Property>
+                    <Property Name="DefaultValue">/data/input/products.csv</Property>
+                </Parameter>
+                <Parameter>
+                    <Property Name="Name">OUTPUT_PATH</Property>
+                    <Property Name="DefaultValue">/data/output/order_summary.csv</Property>
+                </Parameter>
+            </Property>
+            
+            <!-- Input Stage: Orders -->
+            <Record Identifier="V0S1" Type="CustomStage">
+                <Property Name="Name">Input_Orders</Property>
+                <Property Name="StageType">Sequential_File</Property>
+                <Property Name="StageMode">Source</Property>
+                <Property Name="NextStage">Join_Orders_Customers</Property>
+                <Property Name="Columns">
+                    <Column Name="OrderID" SqlType="INTEGER" Nullable="0"/>
+                    <Column Name="CustomerID" SqlType="INTEGER" Nullable="0"/>
+                    <Column Name="ProductID" SqlType="INTEGER" Nullable="0"/>
+                    <Column Name="Quantity" SqlType="INTEGER" Nullable="0"/>
+                    <Column Name="OrderDate" SqlType="DATE" Nullable="0"/>
+                    <Column Name="OrderStatus" SqlType="VARCHAR" Length="20" Nullable="1"/>
+                </Property>
+                <Property Name="FileFormat">Delimited</Property>
+                <Property Name="ColumnDelimiter">,</Property>
+                <Property Name="FirstLineIsColumnNames">True</Property>
+                <Property Name="FilePath">#ORDERS_PATH#</Property>
+            </Record>
+            
+            <!-- Input Stage: Customers -->
+            <Record Identifier="V0S2" Type="CustomStage">
+                <Property Name="Name">Input_Customers</Property>
+                <Property Name="StageType">Sequential_File</Property>
+                <Property Name="StageMode">Source</Property>
+                <Property Name="NextStage">Join_Orders_Customers</Property>
+                <Property Name="Columns">
+                    <Column Name="CustomerID" SqlType="INTEGER" Nullable="0"/>
+                    <Column Name="CustomerName" SqlType="VARCHAR" Length="100" Nullable="0"/>
+                    <Column Name="CustomerSegment" SqlType="VARCHAR" Length="50" Nullable="1"/>
+                    <Column Name="Region" SqlType="VARCHAR" Length="50" Nullable="1"/>
+                </Property>
+                <Property Name="FileFormat">Delimited</Property>
+                <Property Name="ColumnDelimiter">,</Property>
+                <Property Name="FirstLineIsColumnNames">True</Property>
+                <Property Name="FilePath">#CUSTOMERS_PATH#</Property>
+            </Record>
+            
+            <!-- Input Stage: Products (Reference data for lookup) -->
+            <Record Identifier="V0S3" Type="CustomStage">
+                <Property Name="Name">Input_Products</Property>
+                <Property Name="StageType">Sequential_File</Property>
+                <Property Name="StageMode">Source</Property>
+                <Property Name="NextStage">Lookup_Products</Property>
+                <Property Name="Columns">
+                    <Column Name="ProductID" SqlType="INTEGER" Nullable="0"/>
+                    <Column Name="ProductName" SqlType="VARCHAR" Length="100" Nullable="0"/>
+                    <Column Name="Category" SqlType="VARCHAR" Length="50" Nullable="1"/>
+                    <Column Name="UnitPrice" SqlType="DECIMAL" Precision="10" Scale="2" Nullable="0"/>
+                </Property>
+                <Property Name="FileFormat">Delimited</Property>
+                <Property Name="ColumnDelimiter">,</Property>
+                <Property Name="FirstLineIsColumnNames">True</Property>
+                <Property Name="FilePath">#PRODUCTS_PATH#</Property>
+            </Record>
+            
+            <!-- Join Stage: Orders + Customers -->
+            <Record Identifier="V0S4" Type="CustomStage">
+                <Property Name="Name">Join_Orders_Customers</Property>
+                <Property Name="StageType">Join</Property>
+                <Property Name="JoinType">Inner</Property>
+                <Property Name="NextStage">Lookup_Products</Property>
+                <Property Name="JoinKeys">
+                    <JoinKey>
+                        <Property Name="LeftColumn">CustomerID</Property>
+                        <Property Name="RightColumn">CustomerID</Property>
+                    </JoinKey>
+                </Property>
+                <Property Name="OutputColumns">
+                    <Column Source="Left" Name="OrderID"/>
+                    <Column Source="Left" Name="CustomerID"/>
+                    <Column Source="Left" Name="ProductID"/>
+                    <Column Source="Left" Name="Quantity"/>
+                    <Column Source="Left" Name="OrderDate"/>
+                    <Column Source="Left" Name="OrderStatus"/>
+                    <Column Source="Right" Name="CustomerName"/>
+                    <Column Source="Right" Name="CustomerSegment"/>
+                    <Column Source="Right" Name="Region"/>
+                </Property>
+            </Record>
+            
+            <!-- Lookup Stage: Add Product Info -->
+            <Record Identifier="V0S5" Type="CustomStage">
+                <Property Name="Name">Lookup_Products</Property>
+                <Property Name="StageType">Lookup</Property>
+                <Property Name="LookupType">Normal</Property>
+                <Property Name="LookupFailureMode">Continue</Property>
+                <Property Name="NextStage">Transform_Calculate</Property>
+                <Property Name="LookupKeys">
+                    <LookupKey>
+                        <Property Name="InputColumn">ProductID</Property>
+                        <Property Name="ReferenceColumn">ProductID</Property>
+                    </LookupKey>
+                </Property>
+                <Property Name="LookupColumns">
+                    <Column Name="ProductName"/>
+                    <Column Name="Category"/>
+                    <Column Name="UnitPrice"/>
+                </Property>
+                <Property Name="DefaultValues">
+                    <DefaultValue Column="ProductName" Value="UNKNOWN"/>
+                    <DefaultValue Column="Category" Value="UNCATEGORIZED"/>
+                    <DefaultValue Column="UnitPrice" Value="0"/>
+                </Property>
+            </Record>
+            
+            <!-- Transformer: Calculate LineTotal -->
+            <Record Identifier="V0S6" Type="CustomStage">
+                <Property Name="Name">Transform_Calculate</Property>
+                <Property Name="StageType">Transformer</Property>
+                <Property Name="NextStage">Aggregator_Summary</Property>
+                <Property Name="Derivations">
+                    <Derivation>
+                        <Property Name="Name">LineTotal</Property>
+                        <Property Name="Expression">Quantity * UnitPrice</Property>
+                        <Property Name="Description">Calcular total de línea</Property>
+                    </Derivation>
+                    <Derivation>
+                        <Property Name="Name">OrderYear</Property>
+                        <Property Name="Expression">Year(OrderDate)</Property>
+                    </Derivation>
+                    <Derivation>
+                        <Property Name="Name">OrderMonth</Property>
+                        <Property Name="Expression">Month(OrderDate)</Property>
+                    </Derivation>
+                    <Derivation>
+                        <Property Name="Name">CompletedFlag</Property>
+                        <Property Name="Expression">If OrderStatus = "COMPLETED" Then 1 Else 0</Property>
+                    </Derivation>
+                </Property>
+                <Property Name="Constraints">
+                    <Constraint>
+                        <Property Name="Expression">Quantity > 0</Property>
+                        <Property Name="Description">Cantidad debe ser positiva</Property>
+                    </Constraint>
+                    <Constraint>
+                        <Property Name="Expression">UnitPrice >= 0</Property>
+                        <Property Name="Description">Precio no puede ser negativo</Property>
+                    </Constraint>
+                </Property>
+            </Record>
+            
+            <!-- Aggregator Stage: Summary by Customer -->
+            <Record Identifier="V0S7" Type="CustomStage">
+                <Property Name="Name">Aggregator_Summary</Property>
+                <Property Name="StageType">Aggregator</Property>
+                <Property Name="NextStage">Sort_Results</Property>
+                <Property Name="GroupingKeys">
+                    <Key Name="CustomerID"/>
+                    <Key Name="CustomerName"/>
+                    <Key Name="CustomerSegment"/>
+                    <Key Name="Region"/>
+                    <Key Name="OrderYear"/>
+                    <Key Name="OrderMonth"/>
+                </Property>
+                <Property Name="Aggregations">
+                    <Aggregation>
+                        <Property Name="Name">TotalOrders</Property>
+                        <Property Name="Function">COUNT</Property>
+                        <Property Name="Description">Número total de órdenes</Property>
+                    </Aggregation>
+                    <Aggregation>
+                        <Property Name="Name">TotalRevenue</Property>
+                        <Property Name="Function">SUM</Property>
+                        <Property Name="Column">LineTotal</Property>
+                        <Property Name="Description">Revenue total</Property>
+                    </Aggregation>
+                    <Aggregation>
+                        <Property Name="Name">AvgOrderValue</Property>
+                        <Property Name="Function">AVG</Property>
+                        <Property Name="Column">LineTotal</Property>
+                    </Aggregation>
+                    <Aggregation>
+                        <Property Name="Name">MinOrderValue</Property>
+                        <Property Name="Function">MIN</Property>
+                        <Property Name="Column">LineTotal</Property>
+                    </Aggregation>
+                    <Aggregation>
+                        <Property Name="Name">MaxOrderValue</Property>
+                        <Property Name="Function">MAX</Property>
+                        <Property Name="Column">LineTotal</Property>
+                    </Aggregation>
+                    <Aggregation>
+                        <Property Name="Name">CompletedOrders</Property>
+                        <Property Name="Function">SUM</Property>
+                        <Property Name="Column">CompletedFlag</Property>
+                    </Aggregation>
+                    <Aggregation>
+                        <Property Name="Name">TotalQuantity</Property>
+                        <Property Name="Function">SUM</Property>
+                        <Property Name="Column">Quantity</Property>
+                    </Aggregation>
+                </Property>
+            </Record>
+            
+            <!-- Sort Stage -->
+            <Record Identifier="V0S8" Type="CustomStage">
+                <Property Name="Name">Sort_Results</Property>
+                <Property Name="StageType">Sort</Property>
+                <Property Name="NextStage">Output_Summary</Property>
+                <Property Name="SortKeys">
+                    <Key Name="TotalRevenue" Direction="DESC"/>
+                    <Key Name="CustomerName" Direction="ASC"/>
+                </Property>
+            </Record>
+            
+            <!-- Output Stage -->
+            <Record Identifier="V0S9" Type="CustomStage">
+                <Property Name="Name">Output_Summary</Property>
+                <Property Name="StageType">Sequential_File</Property>
+                <Property Name="StageMode">Target</Property>
+                <Property Name="FileFormat">Delimited</Property>
+                <Property Name="ColumnDelimiter">,</Property>
+                <Property Name="FirstLineIsColumnNames">True</Property>
+                <Property Name="FilePath">#OUTPUT_PATH#</Property>
+                <Property Name="WriteMode">OVERWRITE</Property>
+            </Record>
+            
+            <!-- Data Flow -->
+            <Property Name="DataFlow">
+                <Stage From="Input_Orders" To="Join_Orders_Customers" Link="Left"/>
+                <Stage From="Input_Customers" To="Join_Orders_Customers" Link="Right"/>
+                <Stage From="Join_Orders_Customers" To="Lookup_Products" Link="Main"/>
+                <Stage From="Input_Products" To="Lookup_Products" Link="Reference"/>
+                <Stage From="Lookup_Products" To="Transform_Calculate"/>
+                <Stage From="Transform_Calculate" To="Aggregator_Summary"/>
+                <Stage From="Aggregator_Summary" To="Sort_Results"/>
+                <Stage From="Sort_Results" To="Output_Summary"/>
+            </Property>
+        </Record>
+    </Job>
+</DSExport>

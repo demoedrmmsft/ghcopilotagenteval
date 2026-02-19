@@ -1,0 +1,285 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+DataStage Job: Transaction_Validation_WithErrors
+Description: Procesa transacciones con validaciones y manejo de errores
+Complejidad: Media-Alta
+Propósito: Validar migración de reject links y error handling
+-->
+<DSExport>
+    <Job Identifier="Transaction_Validation_WithErrors" DateModified="2024-01-15" TimeModified="16:00:00">
+        <Record Identifier="JOB" Type="ServerJob" Readonly="0">
+            <Property Name="Name">Transaction_Validation_WithErrors</Property>
+            <Property Name="Description">Carga transacciones con validaciones exhaustivas y manejo de rechazos</Property>
+            <Property Name="JobVersion">1.0</Property>
+            <Property Name="Parameters">
+                <Parameter>
+                    <Property Name="Name">INPUT_FILE</Property>
+                    <Property Name="DefaultValue">/data/input/transactions.csv</Property>
+                </Parameter>
+                <Parameter>
+                    <Property Name="Name">OUTPUT_GOOD</Property>
+                    <Property Name="DefaultValue">/data/output/transactions_good.csv</Property>
+                </Parameter>
+                <Parameter>
+                    <Property Name="Name">OUTPUT_REJECTS</Property>
+                    <Property Name="DefaultValue">/data/errors/transactions_rejected.csv</Property>
+                </Parameter>
+                <Parameter>
+                    <Property Name="Name">MIN_AMOUNT</Property>
+                    <Property Name="DefaultValue">0.01</Property>
+                </Parameter>
+                <Parameter>
+                    <Property Name="Name">MAX_AMOUNT</Property>
+                    <Property Name="DefaultValue">1000000</Property>
+                </Parameter>
+            </Property>
+            
+            <!-- Input Stage -->
+            <Record Identifier="V0S1" Type="CustomStage">
+                <Property Name="Name">Input_Transactions</Property>
+                <Property Name="StageType">Sequential_File</Property>
+                <Property Name="StageMode">Source</Property>
+                <Property Name="NextStage">Transform_Validation</Property>
+                <Property Name="Columns">
+                    <Column Name="TransactionID" SqlType="VARCHAR" Length="50" Nullable="1"/>
+                    <Column Name="CustomerID" SqlType="VARCHAR" Length="50" Nullable="1"/>
+                    <Column Name="TransactionDate" SqlType="VARCHAR" Length="20" Nullable="1"/>
+                    <Column Name="Amount" SqlType="VARCHAR" Length="20" Nullable="1"/>
+                    <Column Name="Currency" SqlType="VARCHAR" Length="3" Nullable="1"/>
+                    <Column Name="MerchantID" SqlType="VARCHAR" Length="50" Nullable="1"/>
+                    <Column Name="TransactionType" SqlType="VARCHAR" Length="20" Nullable="1"/>
+                    <Column Name="Status" SqlType="VARCHAR" Length="20" Nullable="1"/>
+                </Property>
+                <Property Name="FileFormat">Delimited</Property>
+                <Property Name="ColumnDelimiter">,</Property>
+                <Property Name="FirstLineIsColumnNames">True</Property>
+                <Property Name="FilePath">#INPUT_FILE#</Property>
+                <Property Name="RejectMode">CONTINUE</Property>
+                <Property Name="RejectLimit">1000</Property>
+            </Record>
+            
+            <!-- Transformer: Validation and Data Quality -->
+            <Record Identifier="V0S2" Type="CustomStage">
+                <Property Name="Name">Transform_Validation</Property>
+                <Property Name="StageType">Transformer</Property>
+                <Property Name="Description">Aplica múltiples validaciones y limpieza de datos</Property>
+                
+                <Property Name="StageVariables">
+                    <Variable>
+                        <Property Name="Name">svAmountNumeric</Property>
+                        <Property Name="Expression">ConvertToNumeric(Trim(Amount))</Property>
+                        <Property Name="Description">Convertir amount a numérico</Property>
+                    </Variable>
+                    <Variable>
+                        <Property Name="Name">svDateParsed</Property>
+                        <Property Name="Expression">StringToDate(Trim(TransactionDate), "%yyyy-%mm-%dd")</Property>
+                        <Property Name="Description">Parsear fecha</Property>
+                    </Variable>
+                    <Variable>
+                        <Property Name="Name">svErrorCode</Property>
+                        <Property Name="InitialValue">""</Property>
+                        <Property Name="Expression">
+                            If IsNull(TransactionID) Or Trim(TransactionID) = "" Then "E001"
+                            Else If IsNull(CustomerID) Or Trim(CustomerID) = "" Then "E002"
+                            Else If IsNull(svDateParsed) Then "E003"
+                            Else If IsNull(svAmountNumeric) Then "E004"
+                            Else If svAmountNumeric LT #MIN_AMOUNT# Then "E005"
+                            Else If svAmountNumeric GT #MAX_AMOUNT# Then "E006"
+                            Else If NOT(IsNull(Currency)) And Len(Trim(Currency)) NE 3 Then "E007"
+                            Else If IsNull(TransactionType) Or NOT(TransactionType In ["PURCHASE","REFUND","WITHDRAWAL","DEPOSIT"]) Then "E008"
+                            Else ""
+                        </Property>
+                    </Variable>
+                    <Variable>
+                        <Property Name="Name">svErrorDescription</Property>
+                        <Property Name="Expression">
+                            If svErrorCode = "E001" Then "Missing TransactionID"
+                            Else If svErrorCode = "E002" Then "Missing CustomerID"
+                            Else If svErrorCode = "E003" Then "Invalid Date Format"
+                            Else If svErrorCode = "E004" Then "Invalid Amount (not numeric)"
+                            Else If svErrorCode = "E005" Then "Amount below minimum threshold"
+                            Else If svErrorCode = "E006" Then "Amount exceeds maximum threshold"
+                            Else If svErrorCode = "E007" Then "Invalid Currency Code"
+                            Else If svErrorCode = "E008" Then "Invalid Transaction Type"
+                            Else ""
+                        </Property>
+                    </Variable>
+                </Property>
+                
+                <Property Name="OutputLinks">
+                    <!-- Good Records Link -->
+                    <Link Name="GoodRecords" Description="Registros válidos">
+                        <Constraint>
+                            <Property Name="Expression">svErrorCode = ""</Property>
+                        </Constraint>
+                        <Property Name="NextStage">Transform_Enrich</Property>
+                        <Property Name="Columns">
+                            <Column Name="TransactionID"/>
+                            <Column Name="CustomerID"/>
+                            <Column Name="TransactionDate" Derivation="svDateParsed"/>
+                            <Column Name="Amount" Derivation="svAmountNumeric"/>
+                            <Column Name="Currency" Derivation="If IsNull(Currency) Then 'USD' Else Trim(Upcase(Currency))"/>
+                            <Column Name="MerchantID" Derivation="Trim(MerchantID)"/>
+                            <Column Name="TransactionType" Derivation="Trim(Upcase(TransactionType))"/>
+                            <Column Name="Status" Derivation="If IsNull(Status) Then 'PENDING' Else Trim(Upcase(Status))"/>
+                        </Property>
+                    </Link>
+                    
+                    <!-- Reject Records Link -->
+                    <Link Name="RejectRecords" Description="Registros rechazados">
+                        <Constraint>
+                            <Property Name="Expression">svErrorCode NE ""</Property>
+                        </Constraint>
+                        <Property Name="NextStage">Transform_AddErrorInfo</Property>
+                        <Property Name="Columns">
+                            <Column Name="TransactionID"/>
+                            <Column Name="CustomerID"/>
+                            <Column Name="TransactionDate"/>
+                            <Column Name="Amount"/>
+                            <Column Name="Currency"/>
+                            <Column Name="MerchantID"/>
+                            <Column Name="TransactionType"/>
+                            <Column Name="Status"/>
+                            <Column Name="ErrorCode" Derivation="svErrorCode"/>
+                            <Column Name="ErrorDescription" Derivation="svErrorDescription"/>
+                        </Property>
+                    </Link>
+                </Property>
+            </Record>
+            
+            <!-- Transformer: Enrich Good Records -->
+            <Record Identifier="V0S3" Type="CustomStage">
+                <Property Name="Name">Transform_Enrich</Property>
+                <Property Name="StageType">Transformer</Property>
+                <Property Name="NextStage">Output_Good</Property>
+                <Property Name="Description">Agregar metadata y cálculos adicionales</Property>
+                <Property Name="Derivations">
+                    <Derivation>
+                        <Property Name="Name">TransactionYear</Property>
+                        <Property Name="Expression">Year(TransactionDate)</Property>
+                    </Derivation>
+                    <Derivation>
+                        <Property Name="Name">TransactionMonth</Property>
+                        <Property Name="Expression">Month(TransactionDate)</Property>
+                    </Derivation>
+                    <Derivation>
+                        <Property Name="Name">TransactionDay</Property>
+                        <Property Name="Expression">Day(TransactionDate)</Property>
+                    </Derivation>
+                    <Derivation>
+                        <Property Name="Name">DayOfWeek</Property>
+                        <Property Name="Expression">DayNameFromDate(TransactionDate)</Property>
+                    </Derivation>
+                    <Derivation>
+                        <Property Name="Name">IsWeekend</Property>
+                        <Property Name="Expression">If DayOfWeek In ["Saturday","Sunday"] Then 1 Else 0</Property>
+                    </Derivation>
+                    <Derivation>
+                        <Property Name="Name">AmountCategory</Property>
+                        <Property Name="Expression">
+                            If Amount LT 10 Then "MICRO"
+                            Else If Amount LT 100 Then "SMALL"
+                            Else If Amount LT 1000 Then "MEDIUM"
+                            Else If Amount LT 10000 Then "LARGE"
+                            Else "VERY_LARGE"
+                        </Property>
+                    </Derivation>
+                    <Derivation>
+                        <Property Name="Name">ProcessedTimestamp</Property>
+                        <Property Name="Expression">CurrentTimestamp()</Property>
+                    </Derivation>
+                    <Derivation>
+                        <Property Name="Name">ProcessedBy</Property>
+                        <Property Name="Expression">"DataStage_Job_Transaction_Validation"</Property>
+                    </Derivation>
+                    <Derivation>
+                        <Property Name="Name">RecordHash</Property>
+                        <Property Name="Expression">Checksum(TransactionID:CustomerID:ToString(Amount):ToString(TransactionDate))</Property>
+                        <Property Name="Description">Hash para detección de duplicados</Property>
+                    </Derivation>
+                </Property>
+                <Property Name="Constraints">
+                    <Constraint>
+                        <Property Name="Expression">Amount GT 0</Property>
+                        <Property Name="Description">Double-check amount positivo</Property>
+                    </Constraint>
+                </Property>
+            </Record>
+            
+            <!-- Transformer: Add Error Metadata -->
+            <Record Identifier="V0S4" Type="CustomStage">
+                <Property Name="Name">Transform_AddErrorInfo</Property>
+                <Property Name="StageType">Transformer</Property>
+                <Property Name="NextStage">Output_Rejects</Property>
+                <Property Name="Derivations">
+                    <Derivation>
+                        <Property Name="Name">RejectedTimestamp</Property>
+                        <Property Name="Expression">CurrentTimestamp()</Property>
+                    </Derivation>
+                    <Derivation>
+                        <Property Name="Name">RejectedBy</Property>
+                        <Property Name="Expression">"DataStage_Job_Transaction_Validation"</Property>
+                    </Derivation>
+                    <Derivation>
+                        <Property Name="Name">SourceFile</Property>
+                        <Property Name="Expression">#INPUT_FILE#</Property>
+                    </Derivation>
+                    <Derivation>
+                        <Property Name="Name">RowNumber</Property>
+                        <Property Name="Expression">@INROWNUM</Property>
+                    </Derivation>
+                </Property>
+            </Record>
+            
+            <!-- Output: Good Records -->
+            <Record Identifier="V0S5" Type="CustomStage">
+                <Property Name="Name">Output_Good</Property>
+                <Property Name="StageType">Sequential_File</Property>
+                <Property Name="StageMode">Target</Property>
+                <Property Name="FileFormat">Delimited</Property>
+                <Property Name="ColumnDelimiter">,</Property>
+                <Property Name="FirstLineIsColumnNames">True</Property>
+                <Property Name="FilePath">#OUTPUT_GOOD#</Property>
+                <Property Name="WriteMode">OVERWRITE</Property>
+            </Record>
+            
+            <!-- Output: Rejected Records -->
+            <Record Identifier="V0S6" Type="CustomStage">
+                <Property Name="Name">Output_Rejects</Property>
+                <Property Name="StageType">Sequential_File</Property>
+                <Property Name="StageMode">Target</Property>
+                <Property Name="FileFormat">Delimited</Property>
+                <Property Name="ColumnDelimiter">,</Property>
+                <Property Name="FirstLineIsColumnNames">True</Property>
+                <Property Name="FilePath">#OUTPUT_REJECTS#</Property>
+                <Property Name="WriteMode">APPEND</Property>
+            </Record>
+            
+            <!-- Data Flow -->
+            <Property Name="DataFlow">
+                <Stage From="Input_Transactions" To="Transform_Validation"/>
+                <Stage From="Transform_Validation" To="Transform_Enrich" OutputLink="GoodRecords"/>
+                <Stage From="Transform_Validation" To="Transform_AddErrorInfo" OutputLink="RejectRecords"/>
+                <Stage From="Transform_Enrich" To="Output_Good"/>
+                <Stage From="Transform_AddErrorInfo" To="Output_Rejects"/>
+            </Property>
+            
+            <!-- Job Control -->
+            <Property Name="AfterJob">
+                <Action Type="NotifyEmail">
+                    <Property Name="Condition">RejectCount GT 100</Property>
+                    <Property Name="Subject">High Reject Rate in Transaction Validation</Property>
+                    <Property Name="Body">
+                        Job: Transaction_Validation_WithErrors
+                        Total Records: #{TotalRecords}
+                        Good Records: #{GoodRecords}
+                        Rejected Records: #{RejectCount}
+                        Reject Rate: #{RejectRate}%
+                        
+                        Please investigate high reject rate.
+                    </Property>
+                </Action>
+            </Property>
+        </Record>
+    </Job>
+</DSExport>
